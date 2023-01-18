@@ -5,34 +5,46 @@ project(proud_color_sorter
         DESCRIPTION "Who am I?"
         LANGUAGES CXX)
 
-include(GNUInstallDirs)
-
 #--------------------------------------------------------------------
 # Settings an options
 #--------------------------------------------------------------------
 
-set(CMAKE_CXX_STANDARD 17)
+option(Proud_Color_Sorter_WARNINGS_AS_ERRORS "Turn all warnings into errors" OFF)
+option(ENABLE_DEVELOPER_MODE "Enables analyses" OFF)
 
-if (NOT DEFINED PROUD_SORTER_WARNINGS)
-    if (MSVC)
-      set(PROUD_SORTER_WARNINGS "/Wall")
-    else()
-      set(PROUD_SORTER_WARNINGS "-Wall -Wextra -Wconversion -Wpedantic")
-    endif()
-endif()
+include(GNUInstallDirs)
+include(cmake/Sanitizers.cmake)
+include(cmake/ClangTidy.cmake)
+include(cmake/CompilerWarnings.cmake)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 #--------------------------------------------------------------------
 # Dependencies
 #--------------------------------------------------------------------
 
+include(cmake/FetchCLI11.cmake)
 find_package(Threads REQUIRED)
-
-include(cmake/Sanitizers.cmake)
 
 #--------------------------------------------------------------------
 # Sources
 #--------------------------------------------------------------------
-## source_group ???
+
+set(sources
+    src/counting_sort.cpp
+    src/counting_sort.hpp
+    src/order.hpp
+)
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${sources})
+
+if (ENABLE_DEVELOPER_MODE)
+    add_clang_tidy_check(${sources})
+endif()
+
 #--------------------------------------------------------------------
 # Targets
 #--------------------------------------------------------------------
@@ -43,16 +55,12 @@ target_include_directories(${PROJECT_NAME}_objs
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(${PROJECT_NAME}_objs PUBLIC Threads::Threads)
+target_link_libraries(${PROJECT_NAME}_objs PUBLIC Threads::Threads CLI11::CLI11)
+
 target_sources(${PROJECT_NAME}_objs 
   PRIVATE
-    src/obj.hpp
-    src/obj.cpp
+    ${sources}
 )
-
-separate_arguments(WARNING_FLAGS NATIVE_COMMAND ${PROUD_SORTER_WARNINGS})
-target_compile_options(${PROJECT_NAME}_objs PUBLIC ${WARNING_FLAGS})
-enable_sanitizers(${PROJECT_NAME}_objs)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME}
@@ -65,15 +73,28 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-enable_sanitizers(${PROJECT_NAME})
+set_project_warnings(
+  ${PROJECT_NAME}_objs
+  "${Proud_Color_Sorter_WARNINGS_AS_ERRORS}"
+  "${Proud_Color_Sorter_MSVC_WARNINGS}"
+  "${Proud_Color_Sorter_CLANG_WARNINGS}"
+  "${Proud_Color_Sorter_GCC_WARNINGS}"
+)
+
+if (ENABLE_DEVELOPER_MODE)
+  set(Proud_Coloer_Sorter_WARNINGS_AS_ERRORS ON)
+  set(BUILD_TESTING ON)
+  enable_sanitizers(${PROJECT_NAME}_objs)
+  enable_sanitizers(${PROJECT_NAME})
+endif()
 
 #--------------------------------------------------------------------
 # Install set
 #--------------------------------------------------------------------
 
 install(TARGETS ${PROJECT_NAME}
-    DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT ${PROJECT_NAME}
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+        COMPONENT ${PROJECT_NAME}
 )
 
 #--------------------------------------------------------------------
