@@ -35,6 +35,7 @@ find_package(Threads REQUIRED)
 #--------------------------------------------------------------------
 
 set(sources
+    src/concurrent/mpmc_queue.hpp
     src/counting_sort.cpp
     src/counting_sort.hpp
     src/order.hpp

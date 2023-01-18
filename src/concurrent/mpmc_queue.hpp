@@ -11,9 +11,6 @@ namespace proud_color_sorter::concurrent {
 template <typename T>
 class MPMCUnboundedBlockingQueue {
  public:
-  template <typename... Args>
-  void Emplace(Args&&... args) {}
-
   bool Put(const T& element) {
     {
       std::scoped_lock lock(queue_lock_);

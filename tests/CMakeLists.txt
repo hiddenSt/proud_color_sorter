@@ -16,6 +16,7 @@ target_include_directories(${PROJECT_NAME}_tests
 target_sources(${PROJECT_NAME}_tests
   PRIVATE
     counting_sort_tests.cpp
+    mpmc_queue_tests.cpp
 )
 
 enable_sanitizers(${PROJECT_NAME}_tests)
