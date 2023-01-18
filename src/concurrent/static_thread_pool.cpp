@@ -6,9 +6,7 @@ namespace proud_color_sorter::concurrent {
 
 StaticThreadPool::StaticThreadPool(std::size_t num_threads) {
   for (std::size_t i = 0; i < num_threads; ++i) {
-    workers_.emplace_back([this]() mutable {
-      WorkerRoutine();
-    });  
+    workers_.emplace_back([this]() mutable { WorkerRoutine(); });
   }
 }
 
@@ -16,14 +14,12 @@ StaticThreadPool::~StaticThreadPool() {
   // TODO: check if thread pool is stopped.
 }
 
-bool StaticThreadPool::Submit(Task task) {
-  return task_queue_.Put(std::move(task));
-}
+bool StaticThreadPool::Submit(Task task) { return task_queue_.Put(std::move(task)); }
 
 void StaticThreadPool::Stop() {
   task_queue_.Cancel();
 
-  for (auto& worker: workers_) {
+  for (auto& worker : workers_) {
     if (worker.joinable()) {
       worker.join();
     }
@@ -35,7 +31,7 @@ void StaticThreadPool::WorkerRoutine() {
     auto task = task_queue_.Take();
 
     if (!task.has_value()) {
-        return;
+      return;
     }
 
     try {

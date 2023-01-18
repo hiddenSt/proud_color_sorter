@@ -1,10 +1,10 @@
 #pragma once
 
+#include <condition_variable>
+#include <mutex>
+#include <optional>
 #include <queue>
 #include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <optional>
 
 namespace proud_color_sorter::concurrent {
 
@@ -12,9 +12,7 @@ template <typename T>
 class MPMCUnboundedBlockingQueue {
  public:
   template <typename... Args>
-  void Emplace(Args&&... args) {
-
-  }
+  void Emplace(Args&&... args) {}
 
   bool Put(const T& element) {
     {
@@ -26,7 +24,7 @@ class MPMCUnboundedBlockingQueue {
 
       queue_.push(element);
     }
-    
+
     not_empty_.notify_one();
 
     return true;
@@ -49,13 +47,9 @@ class MPMCUnboundedBlockingQueue {
     return element;
   }
 
-  void Close() {
-    CloseImpl(false);
-  }
+  void Close() { CloseImpl(false); }
 
-  void Cancel() {
-    CloseImpl(true);
-  }
+  void Cancel() { CloseImpl(true); }
 
  private:
   void CloseImpl(bool clear) {
@@ -65,10 +59,9 @@ class MPMCUnboundedBlockingQueue {
 
       if (clear) {
         while (!queue_.empty()) {
-            queue_.pop();
+          queue_.pop();
         }
       }
-
     }
 
     not_empty_.notify_all();
@@ -81,4 +74,4 @@ class MPMCUnboundedBlockingQueue {
   bool is_closed_{false};
 };
 
-}  // namespace proud_color_sorter
+}  // namespace proud_color_sorter::concurrent

@@ -19,15 +19,15 @@ class Order {
   bool IsLessOrEqual(const T& lhs, const T& rhs) const noexcept;
   bool IsEqual(const T& lhs, const T& rhs) const noexcept;
   bool IsNotEqual(const T& lhs, const T& rhs) const noexcept;
-  
+
   class Iterator {
    public:
-    using iterator_category = std::random_access_iterator_tag; // NOLINT
-    using value_type = T; // NOLINT
-    using pointer = T*; // NOLINT
-    using reference = T&; // NOLINT
-    using difference_type = std::ptrdiff_t; // NOLINT
-    
+    using iterator_category = std::random_access_iterator_tag;  // NOLINT
+    using value_type = T;                                       // NOLINT
+    using pointer = T*;                                         // NOLINT
+    using reference = T&;                                       // NOLINT
+    using difference_type = std::ptrdiff_t;                     // NOLINT
+
     explicit Iterator(T* rank_to_element);
 
     reference operator*() const;
@@ -35,7 +35,7 @@ class Order {
 
     Iterator& operator++();
     Iterator operator++(int);
-    
+
     friend bool operator==(const Iterator& lhs, const Iterator& rhs);
     friend bool operator!=(const Iterator& lhs, const Iterator& rhs);
 
@@ -45,7 +45,7 @@ class Order {
 
   Iterator begin();
   Iterator end();
-  
+
   Iterator rbegin();
   Iterator rend();
 
@@ -87,4 +87,4 @@ const T& Order<T, MaxRank>::GetElement(const std::size_t rank) const noexcept {
   return rank_to_element_[rank];
 }
 
-}  // name
+}  // namespace proud_color_sorter

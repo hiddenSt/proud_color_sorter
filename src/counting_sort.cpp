@@ -23,8 +23,7 @@ void AddColorTo(std::vector<Color>& colors, std::size_t color_count, const Color
 
 }  // namespace detail
 
-std::vector<Color> CountingSort(const std::vector<Color>& colors, 
-                                const ColorOrder& color_order) {
+std::vector<Color> CountingSort(const std::vector<Color>& colors, const ColorOrder& color_order) {
   auto color_count = detail::CountColors(colors);
 
   std::vector<Color> sorted_colors;

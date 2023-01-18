@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <cstdint>
 #include <vector>
 
@@ -26,10 +25,9 @@ using ColorOrder = Order<Color, kColorCount>;
 //           colors.end(),
 //           [&color_order](const Color lhs, const Color rhs) {
 //             return color_order.IsLess(lhs, rhs);
-//                                            
+//
 // });
 // ```
-std::vector<Color> CountingSort(const std::vector<Color>& colors, 
-                                const ColorOrder& color_order);
+std::vector<Color> CountingSort(const std::vector<Color>& colors, const ColorOrder& color_order);
 
 }  // namespace proud_color_sorter

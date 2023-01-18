@@ -17,11 +17,11 @@ class StaticThreadPool {
 
   StaticThreadPool(const StaticThreadPool&) = delete;
   StaticThreadPool& operator=(const StaticThreadPool&) = delete;
-  
+
   bool Submit(Task task);
 
   void Stop();
- 
+
  private:
   void WorkerRoutine();
 
