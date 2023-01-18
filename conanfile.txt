@@ -1,0 +1,7 @@
+[requires]
+cli11/2.3.2
+fmt/9.1.0
+
+[generators]
+cmake_find_package
+cmake_paths

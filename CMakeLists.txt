@@ -27,8 +27,11 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 # Dependencies
 #--------------------------------------------------------------------
 
-include(cmake/FetchCLI11.cmake)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+
 find_package(Threads REQUIRED)
+find_package(fmt REQUIRED)
+find_package(CLI11 REQUIRED)
 
 #--------------------------------------------------------------------
 # Sources
@@ -56,7 +59,11 @@ target_include_directories(${PROJECT_NAME}_objs
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(${PROJECT_NAME}_objs PUBLIC Threads::Threads CLI11::CLI11)
+target_link_libraries(${PROJECT_NAME}_objs 
+  PUBLIC
+    Threads::Threads
+    CLI11::CLI11
+    fmt::fmt)
 
 target_sources(${PROJECT_NAME}_objs 
   PRIVATE
