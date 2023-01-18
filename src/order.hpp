@@ -13,13 +13,6 @@ class Order {
   T& GetElement(const std::size_t rank) noexcept;
   const T& GetElement(const std::size_t rank) const noexcept;
 
-  bool IsGreater(const T& lhs, const T& rhs) const noexcept;
-  bool IsGreaterOrEqual(const T& lhs, const T& rhs) const noexcept;
-  bool IsLess(const T& lhs, const T& rhs) const noexcept;
-  bool IsLessOrEqual(const T& lhs, const T& rhs) const noexcept;
-  bool IsEqual(const T& lhs, const T& rhs) const noexcept;
-  bool IsNotEqual(const T& lhs, const T& rhs) const noexcept;
-
   class Iterator {
    public:
     using iterator_category = std::random_access_iterator_tag;  // NOLINT
