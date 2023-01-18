@@ -27,7 +27,9 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 # Dependencies
 #--------------------------------------------------------------------
 
-include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
+  include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+endif()
 
 find_package(Threads REQUIRED)
 find_package(fmt REQUIRED)
