@@ -51,6 +51,11 @@ function(enable_sanitizers project_name)
     endif()
 
     if (LIST_OF_SANITIZERS)
+        if (MSVC)
+            message(WARNING "Sanitizers are not supported by Windows")
+            return()
+        endif()
+
         if (NOT "${LIST_OF_SANITIZERS}" STREQUAL "")
             target_compile_options(${project_name} INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
             target_link_options(${project_name} INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
