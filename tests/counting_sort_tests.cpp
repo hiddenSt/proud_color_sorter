@@ -16,13 +16,8 @@ TEST(CountingSortTest, empty_array) {
   ASSERT_TRUE(sorted_colors.empty());
 }
 
-TEST(CountingSortTest, empty_order) {
-  
-}
+TEST(CountingSortTest, empty_order) {}
 
-TEST(CountingSortTest, order_test) {
-
-}
-
+TEST(CountingSortTest, order_test) {}
 
 }  // namespace proud_color_sorter::tests

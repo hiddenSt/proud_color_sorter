@@ -68,7 +68,7 @@ TEST(MPMCQueueTests, cancel) {
 
 TEST(MPMCQueueTests, take_blocked_on_empty_queue) {
   MPMCUnboundedBlockingQueue<int> queue;
-  
+
   std::atomic<int> taken_element = 0;
 
   auto consumer = std::thread([&]() mutable {
@@ -90,7 +90,7 @@ TEST(MPMCQueueTests, take_blocked_on_empty_queue) {
 
 TEST(MPMCQueueTests, awakes_on_close) {
   MPMCUnboundedBlockingQueue<int> queue;
-  
+
   std::atomic<bool> consumer_1_awaken = false;
   std::atomic<bool> consumer_2_awaken = false;
 
@@ -118,8 +118,8 @@ TEST(MPMCQueueTests, awakes_on_close) {
 }
 
 TEST(MPMCUnboundedBlockingQueue, awakes_on_cancel) {
-   MPMCUnboundedBlockingQueue<int> queue;
-  
+  MPMCUnboundedBlockingQueue<int> queue;
+
   std::atomic<bool> consumer_1_awaken = false;
   std::atomic<bool> consumer_2_awaken = false;
 
@@ -146,8 +146,6 @@ TEST(MPMCUnboundedBlockingQueue, awakes_on_cancel) {
   consumer_2.join();
 }
 
-TEST(MPMCUnboundedBlockingQueue, concurrent_calls) {
-  MPMCUnboundedBlockingQueue<int> queue;
-}
+TEST(MPMCUnboundedBlockingQueue, concurrent_calls) { MPMCUnboundedBlockingQueue<int> queue; }
 
-}  // namespace proud_color_sorter::tests
+}  // namespace proud_color_sorter::concurrent::tests
