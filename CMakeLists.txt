@@ -40,9 +40,9 @@ find_package(CLI11 REQUIRED)
 #--------------------------------------------------------------------
 
 set(sources
-    src/concurrent/mpmc_queue.hpp
     src/counting_sort.cpp
     src/counting_sort.hpp
+    src/spsc_queue.hpp
     src/order.hpp
 )
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${sources})
