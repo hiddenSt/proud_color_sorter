@@ -41,6 +41,8 @@ find_package(CLI11 REQUIRED)
 
 set(sources
     src/utils/color_formatter.hpp
+    src/utils/daemon_main.hpp
+    src/utils/daemon_main.cpp
     src/counting_sort.cpp
     src/counting_sort.hpp
     src/color.hpp
@@ -61,6 +63,7 @@ add_library(${PROJECT_NAME}_objs OBJECT)
 target_include_directories(${PROJECT_NAME}_objs
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}_objs 
@@ -94,7 +97,7 @@ set_project_warnings(
 )
 
 if (ENABLE_DEVELOPER_MODE)
-  set(Proud_Coloer_Sorter_WARNINGS_AS_ERRORS ON)
+  set(Proud_Color_Sorter_WARNINGS_AS_ERRORS ON)
   set(BUILD_TESTING ON)
   enable_sanitizers(${PROJECT_NAME}_objs)
   enable_sanitizers(${PROJECT_NAME})
