@@ -34,7 +34,7 @@ std::vector<Color> CountingSort(const std::vector<Color>& colors, const ColorOrd
 
   std::vector<Color> sorted_colors;
   sorted_colors.reserve(colors.size());
-  
+
   for (const Color color : color_order) {
     detail::AddColorTo(sorted_colors, color_count[static_cast<std::size_t>(color)], color);
   }

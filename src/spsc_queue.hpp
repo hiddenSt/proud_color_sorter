@@ -55,15 +55,17 @@ template <typename T>
 std::optional<T> SPSCUnboundedBlockingQueue<T>::Take() {
   std::unique_lock lock{queue_lock_};
 
+  std::optional<T> element = std::nullopt;
+
   while (queue_.empty() && !is_closed_) {
     queue_not_empty_.wait(lock);
   }
 
   if (queue_.empty() && is_closed_) {
-    return std::nullopt;
+    return element;
   }
 
-  T element = std::move(queue_.front());
+  element.emplace(std::move(queue_.front()));
   queue_.pop();
 
   return element;
