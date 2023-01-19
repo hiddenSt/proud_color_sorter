@@ -7,7 +7,7 @@
 
 template <>
 struct fmt::formatter<proud_color_sorter::Color> {
-  constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+  constexpr auto parse(format_parse_context& ctx) const -> decltype(ctx.begin()) {
     if (ctx.begin() != ctx.end()) {
       throw fmt::format_error{"Format specifications for 'Color' are not supported"};
     }
@@ -16,7 +16,7 @@ struct fmt::formatter<proud_color_sorter::Color> {
   }
 
   template <typename FormatContext>
-  auto format(const proud_color_sorter::Color& color, FormatContext& ctx) -> decltype(ctx.out()) {
+  auto format(const proud_color_sorter::Color color, FormatContext& ctx) const -> decltype(ctx.out()) {
     switch (color) {
       case proud_color_sorter::Color::kRed:
         return fmt::format_to(ctx.out(), "R");
