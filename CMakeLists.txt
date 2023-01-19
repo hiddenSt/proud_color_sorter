@@ -42,8 +42,9 @@ find_package(CLI11 REQUIRED)
 set(sources
     src/counting_sort.cpp
     src/counting_sort.hpp
-    src/spsc_queue.hpp
+    src/color.hpp
     src/order.hpp
+    src/spsc_queue.hpp
 )
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${sources})
 
