@@ -20,7 +20,7 @@ TEST(CountingSortTest, empty_array) {
 }
 
 TEST(CountingSortTest, order) {
-  std::vector<Color> colors{Color::kRed, Color::kGreen, Color::kBlue, Color::kGreen, Color::kBlue};
+  std::vector<Color> colors{Color::kRed,  Color::kGreen, Color::kBlue, Color::kGreen};
   ColorOrder order;
   order.Set(Color::kRed, 0);
   order.Set(Color::kGreen, 1);
