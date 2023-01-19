@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdlib>
+
 #include <fmt/core.h>
 #include <fmt/format.h>
 
@@ -27,5 +29,7 @@ struct fmt::formatter<proud_color_sorter::Color> {
       case proud_color_sorter::Color::kBlue:
         return fmt::format_to(ctx.out(), "B");
     }
+
+    std::abort();
   }
 };
