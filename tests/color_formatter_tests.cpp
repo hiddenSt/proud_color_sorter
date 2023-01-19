@@ -13,7 +13,12 @@ TEST(ColorFormatterTests, colors) {
 }
 
 TEST(ColorFormatterTests, throws_on_specifications) {
-  EXPECT_THROW(fmt::format("{:a}", Color::kRed), fmt::format_error);  // NOLINT
+  try {
+    auto str = fmt::format("{:a}", Color::kRed);
+    FAIL() << str;
+  } catch (const fmt::format_error&) {
+    SUCCEED();
+  }
 }
 
 }  // namespace proud_color_sorter::tests
