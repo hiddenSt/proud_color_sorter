@@ -1,7 +1,6 @@
-#include <cstdint>
-#include <utils/color_formatter.hpp>
 #include <utils/daemon_main.hpp>
 
+#include <cstdint>
 #include <random>
 #include <thread>
 
@@ -13,6 +12,7 @@
 #include <counting_sort.hpp>
 #include <order.hpp>
 #include <spsc_queue.hpp>
+#include <utils/color_formatter.hpp>
 
 namespace proud_color_sorter::utils {
 
