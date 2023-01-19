@@ -37,7 +37,7 @@ class SPSCUnboundedBlockingQueue {
 template <typename T>
 bool SPSCUnboundedBlockingQueue<T>::Put(T element) {
   {
-    std::lock_guard<T> lock{queue_lock_};
+    std::lock_guard lock{queue_lock_};
 
     if (is_closed_) {
       return false;
@@ -53,13 +53,13 @@ bool SPSCUnboundedBlockingQueue<T>::Put(T element) {
 
 template <typename T>
 std::optional<T> SPSCUnboundedBlockingQueue<T>::Take() {
-  std::unique_lock<T> lock{queue_lock_};
+  std::unique_lock lock{queue_lock_};
 
   while (queue_.empty() && !is_closed_) {
     queue_not_empty_.wait(lock);
   }
 
-  if (is_closed_) {
+  if (queue_.empty() && is_closed_) {
     return std::nullopt;
   }
 
