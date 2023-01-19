@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include <color.hpp>
-#include <color_formatter.hpp>
+#include <utils/color_formatter.hpp>
 
 namespace proud_color_sorter::tests {
 

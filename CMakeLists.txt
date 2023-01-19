@@ -40,9 +40,9 @@ find_package(CLI11 REQUIRED)
 #--------------------------------------------------------------------
 
 set(sources
+    src/utils/color_formatter.hpp
     src/counting_sort.cpp
     src/counting_sort.hpp
-    src/color_formatter.hpp
     src/color.hpp
     src/order.hpp
     src/spsc_queue.hpp
