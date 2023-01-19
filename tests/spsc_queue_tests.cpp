@@ -1,12 +1,10 @@
 #include <atomic>
 #include <chrono>
 #include <thread>
-#include <thread>
 
 #include <gtest/gtest.h>
 
 #include <spsc_queue.hpp>
-
 
 namespace proud_color_sorter::tests {
 
@@ -38,7 +36,7 @@ TEST(SPSCQueueTests, take_blocks_caller_on_empty_queue) {
   std::this_thread::sleep_for(std::chrono::milliseconds(50));
   EXPECT_FALSE(element_taken.load());
   EXPECT_TRUE(queue.Put(1));
-  
+
   std::this_thread::sleep_for(std::chrono::milliseconds(50));
   EXPECT_TRUE(element_taken.load());
 
@@ -47,7 +45,7 @@ TEST(SPSCQueueTests, take_blocks_caller_on_empty_queue) {
 
 TEST(SPSCQueueTests, close) {
   SPSCUnboundedBlockingQueue<int> queue;
-  
+
   EXPECT_TRUE(queue.Put(1));
   queue.Close();
   EXPECT_FALSE(queue.Put(2));
@@ -91,9 +89,9 @@ TEST(SPSCQueueTests, fifo) {
 TEST(SPSCQueueTests, concurrent_fifo) {
   SPSCUnboundedBlockingQueue<int> queue;
   std::vector<int> elements{1, 2, 3, 4, 5};
-  
+
   auto producer = std::thread([&]() mutable {
-    for (int element: elements) {
+    for (int element : elements) {
       EXPECT_TRUE(queue.Put(element));
     }
   });
@@ -111,4 +109,4 @@ TEST(SPSCQueueTests, concurrent_fifo) {
   producer.join();
 }
 
-}
+}  // namespace proud_color_sorter::tests

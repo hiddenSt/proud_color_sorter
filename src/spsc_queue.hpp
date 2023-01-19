@@ -1,8 +1,8 @@
 #pragma once
 
-#include <optional>
-#include <mutex>
 #include <condition_variable>
+#include <mutex>
+#include <optional>
 #include <queue>
 
 namespace proud_color_sorter {
@@ -10,24 +10,24 @@ namespace proud_color_sorter {
 /// Single-producer/Single-consumer (SPSC) unbounded blocking queue.
 template <typename T>
 class SPSCUnboundedBlockingQueue {
-public:
+ public:
   /// Put \a element in queue if it's not closed and returns true, if queue is closed returns false.
   bool Put(T element);
-  
+
   /// Returns element from queue head if it's not closed.
   /// Blocks caller if queue is empty until it's filled.
   std::optional<T> Take();
-  
+
   /// Close queue for new \ref Put.
   void Close();
 
   /// Close queue. Drains pending elements from queue.
   void Cancel();
 
-private:
+ private:
   void CloseImpl(bool need_drain);
 
-private:
+ private:
   std::queue<T> queue_;
   std::mutex queue_lock_;
   std::condition_variable queue_not_empty_;
@@ -38,14 +38,14 @@ template <typename T>
 bool SPSCUnboundedBlockingQueue<T>::Put(T element) {
   {
     std::lock_guard<T> lock{queue_lock_};
-    
+
     if (is_closed_) {
       return false;
     }
 
     queue_.emplace(std::move(element));
   }
-  
+
   queue_not_empty_.notify_one();
 
   return true;
