@@ -94,6 +94,8 @@ TEST(SPSCQueueTests, concurrent_fifo) {
     for (int element : elements) {
       EXPECT_TRUE(queue.Put(element));
     }
+
+    queue.Close();
   });
 
   auto element = queue.Take();
