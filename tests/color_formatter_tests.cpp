@@ -1,8 +1,8 @@
-#include <color.hpp>
-#include <color_formatter.hpp>
-
 #include <fmt/format.h>
 #include <gtest/gtest.h>
+
+#include <color.hpp>
+#include <color_formatter.hpp>
 
 namespace proud_color_sorter::tests {
 
