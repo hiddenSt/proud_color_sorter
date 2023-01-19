@@ -70,6 +70,7 @@ class Order {
       --rank_to_element_ptr_;
       return *this;
     }
+
     Iterator operator--(int) {
       Iterator it = Iterator{rank_to_element_ptr_};
       --rank_to_element_ptr_;
@@ -130,31 +131,71 @@ class Order {
     using reference = value_type&;                              // NOLINT
     using difference_type = std::ptrdiff_t;                     // NOLINT
 
-    explicit ConstIterator(const T* rank_to_element): rank_to_element_ptr_(rank_to_element) {}
+    explicit ConstIterator(const T* rank_to_element) : rank_to_element_ptr_(rank_to_element) {}
 
     reference operator*() const { return *rank_to_element_ptr_; }
     pointer operator->() const { return rank_to_element_ptr_; }
 
-    ConstIterator& operator++() { ++rank_to_element_ptr_; return *this;}
-    ConstIterator operator++(int) { ConstIterator it{rank_to_element_ptr_}; ++rank_to_element_ptr_; return it; }
+    ConstIterator& operator++() {
+      ++rank_to_element_ptr_;
+      return *this;
+    }
+    ConstIterator operator++(int) {
+      ConstIterator it{rank_to_element_ptr_};
+      ++rank_to_element_ptr_;
+      return it;
+    }
 
-    ConstIterator& operator--() { --rank_to_element_ptr_; return *this; }
-    ConstIterator operator--(int) { ConstIterator it{rank_to_element_ptr_}; --rank_to_element_ptr_; return it; }
+    ConstIterator& operator--() {
+      --rank_to_element_ptr_;
+      return *this;
+    }
+    ConstIterator operator--(int) {
+      ConstIterator it{rank_to_element_ptr_};
+      --rank_to_element_ptr_;
+      return it;
+    }
 
-    ConstIterator& operator+=(difference_type n) { rank_to_element_ptr_ += n; return *this; }
-    ConstIterator& operator-=(difference_type n) { rank_to_element_ptr_ -= n; return *this; }
+    ConstIterator& operator+=(difference_type n) {
+      rank_to_element_ptr_ += n;
+      return *this;
+    }
+    ConstIterator& operator-=(difference_type n) {
+      rank_to_element_ptr_ -= n;
+      return *this;
+    }
 
-    friend bool operator==(const ConstIterator& lhs, const ConstIterator& rhs) { return lhs.rank_to_element_ptr_ == rhs.rank_to_element_ptr_; }
-    friend bool operator!=(const ConstIterator& lhs, const ConstIterator& rhs) { return lhs.rank_to_element_ptr_ != rhs.rank_to_element_ptr_; }
-    friend bool operator<(const ConstIterator& lhs, const ConstIterator& rhs) { return lhs.rank_to_element_ptr_ < rhs.rank_to_element_ptr_; }
-    friend bool operator<=(const ConstIterator& lhs, const ConstIterator& rhs) { return lhs.rank_to_element_ptr_ <= rhs.rank_to_element_ptr_; }
-    friend bool operator>(const ConstIterator& lhs, const ConstIterator& rhs) {return lhs.rank_to_element_ptr_ > rhs.rank_to_element_ptr_; }
-    friend bool operator>=(const ConstIterator& lhs, const ConstIterator& rhs) { return lhs.rank_to_element_ptr_ >= rhs.rank_to_element_ptr_; }
+    friend bool operator==(const ConstIterator& lhs, const ConstIterator& rhs) {
+      return lhs.rank_to_element_ptr_ == rhs.rank_to_element_ptr_;
+    }
+    friend bool operator!=(const ConstIterator& lhs, const ConstIterator& rhs) {
+      return lhs.rank_to_element_ptr_ != rhs.rank_to_element_ptr_;
+    }
+    friend bool operator<(const ConstIterator& lhs, const ConstIterator& rhs) {
+      return lhs.rank_to_element_ptr_ < rhs.rank_to_element_ptr_;
+    }
+    friend bool operator<=(const ConstIterator& lhs, const ConstIterator& rhs) {
+      return lhs.rank_to_element_ptr_ <= rhs.rank_to_element_ptr_;
+    }
+    friend bool operator>(const ConstIterator& lhs, const ConstIterator& rhs) {
+      return lhs.rank_to_element_ptr_ > rhs.rank_to_element_ptr_;
+    }
+    friend bool operator>=(const ConstIterator& lhs, const ConstIterator& rhs) {
+      return lhs.rank_to_element_ptr_ >= rhs.rank_to_element_ptr_;
+    }
 
-    friend ConstIterator operator+(const ConstIterator& lhs, difference_type rhs) { return ConstIterator{lhs.rank_to_element_ptr_ + rhs}; }
-    friend ConstIterator operator+(difference_type lhs, const ConstIterator& rhs) { return ConstIterator{rhs.rank_to_element_ptr_ + lhs}; }
-    friend ConstIterator operator-(const ConstIterator& lhs, difference_type rhs) { return ConstIterator{lhs.rank_to_element_ptr_ - rhs}; }
-    friend difference_type operator-(const ConstIterator& lhs, const ConstIterator& rhs) { return lhs.rank_to_element_ptr_ - rhs.rank_to_element_ptr_; }
+    friend ConstIterator operator+(const ConstIterator& lhs, difference_type rhs) {
+      return ConstIterator{lhs.rank_to_element_ptr_ + rhs};
+    }
+    friend ConstIterator operator+(difference_type lhs, const ConstIterator& rhs) {
+      return ConstIterator{rhs.rank_to_element_ptr_ + lhs};
+    }
+    friend ConstIterator operator-(const ConstIterator& lhs, difference_type rhs) {
+      return ConstIterator{lhs.rank_to_element_ptr_ - rhs};
+    }
+    friend difference_type operator-(const ConstIterator& lhs, const ConstIterator& rhs) {
+      return lhs.rank_to_element_ptr_ - rhs.rank_to_element_ptr_;
+    }
 
    private:
     const T* rank_to_element_ptr_ = nullptr;
