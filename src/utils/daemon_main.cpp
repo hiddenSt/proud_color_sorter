@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <utils/color_formatter.hpp>
 #include <utils/daemon_main.hpp>
 
@@ -30,13 +31,11 @@ struct RandomGenerator {
 
 namespace detail {
 
-std::vector<Color> GenerateColors(RandomGenerator<std::size_t>& size_generator,
-                                  RandomGenerator<std::uint8_t>& color_generator) {
+std::vector<Color> GenerateColors(RandomGenerator<std::uint64_t>& size_generator,
+                                  RandomGenerator<std::uint64_t>& color_generator) {
   auto color_size = size_generator.Generate();
   std::vector<Color> colors;
   colors.reserve(color_size);
-
-  std::uniform_int_distribution<std::uint8_t> uniform_distribution_element{0, kColorCount};
 
   for (std::size_t i = 0; i < color_size; ++i) {
     auto generated = color_generator.Generate();
@@ -77,8 +76,8 @@ int DaemonMain(int argc, char* argv[]) {
 
   auto producer = std::thread([&channel, generated_seq_max_size]() mutable {
     std::vector<Color> colors;
-    RandomGenerator<std::size_t> size_generator{1, generated_seq_max_size};
-    RandomGenerator<std::uint8_t> color_generator{0, kColorCount - 1};
+    RandomGenerator<std::uint64_t> size_generator{1, generated_seq_max_size};
+    RandomGenerator<std::uint64_t> color_generator{0, kColorCount - 1};
 
     do {
       colors = detail::GenerateColors(size_generator, color_generator);
