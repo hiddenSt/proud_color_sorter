@@ -5,6 +5,9 @@
 #include <iterator>
 
 namespace proud_color_sorter {
+
+/// Stores order of elements of type \a T.
+/// Provides STL-like iterators API to iterate through order relation.
 template <typename T, std::size_t MaxRank>
 class Order {
  public:
@@ -12,6 +15,13 @@ class Order {
   std::size_t GetRank(const T& element) const noexcept;
   T& GetElement(const std::size_t rank) noexcept;
   const T& GetElement(const std::size_t rank) const noexcept;
+
+  bool IsEqual(const T& lhs, const T& rhs) const noexcept;
+  bool IsNotEqual(const T& lhs, const T& rhs) const noexcept;
+  bool IsLess(const T& lhs, const T& rhs) const noexcept;
+  bool IsLessOrEqual(const T& lhs, const T& rhs) const noexcept;
+  bool IsGreater(const T& lhs, const T& rhs) const noexcept;
+  bool IsGreaterOrEqual(const T& lhs, const T& rhs) const noexcept;
 
   class Iterator {
    public:
@@ -21,19 +31,39 @@ class Order {
     using reference = value_type&;                              // NOLINT
     using difference_type = std::ptrdiff_t;                     // NOLINT
 
-    explicit Iterator(T* rank_to_element);
+    explicit Iterator(T* rank_to_element) : rank_to_element_ptr_(rank_to_element) {}
 
-    reference operator*() const;
-    pointer operator->();
+    reference operator*() const { return *rank_to_element_ptr_; }
+    pointer operator->() { return rank_to_element_ptr_; };
 
-    Iterator& operator++();
-    Iterator operator++(int);
+    Iterator& operator++() {
+      rank_to_element_ptr_ += 1;
+      return *this;
+    };
+    Iterator operator++(int) {
+      Iterator it = Iterator{rank_to_element_ptr_};
+      rank_to_element_ptr_ += 1;
+      return it;
+    }
 
-    Iterator& operator--();
-    Iterator operator--(int);
+    Iterator& operator--() {
+      rank_to_element_ptr_ -= 1;
+      return *this;
+    }
+    Iterator operator--(int) {
+      Iterator it = Iterator{rank_to_element_ptr_};
+      rank_to_element_ptr_ -= 1;
+      return it;
+    }
 
-    Iterator& operator+=(difference_type n);
-    Iterator& operator-=(difference_type n);
+    Iterator& operator+=(difference_type n) {
+      rank_to_element_ptr_ += n;
+      return *this;
+    }
+    Iterator& operator-=(difference_type n) {
+      rank_to_element_ptr_ -= n;
+      return *this;
+    }
 
     friend bool operator==(const Iterator& lhs, const Iterator& rhs);
     friend bool operator!=(const Iterator& lhs, const Iterator& rhs);
