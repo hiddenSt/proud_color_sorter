@@ -1,4 +1,3 @@
-#include <array>
 #include <algorithm>
 #include <vector>
 
@@ -28,9 +27,8 @@ TEST(CountingSortTest, order) {
   order.Set(Color::kBlue, 2);
 
   auto sorted_colors = CountingSort(colors, order);
-  std::sort(colors.begin(), colors.end(), [&order](const Color lhs, const Color rhs) mutable {
-    return order.IsLess(lhs, rhs);
-  });
+  std::sort(colors.begin(), colors.end(),
+            [&order](const Color lhs, const Color rhs) mutable { return order.IsLess(lhs, rhs); });
 
   EXPECT_EQ(sorted_colors, colors);
 }
