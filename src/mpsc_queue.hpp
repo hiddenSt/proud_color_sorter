@@ -7,9 +7,9 @@
 
 namespace proud_color_sorter {
 
-/// Single-producer/Single-consumer (SPSC) unbounded blocking queue.
+/// Multi-producer/Single-consumer (MPSC) unbounded blocking queue.
 template <typename T>
-class SPSCUnboundedBlockingQueue {
+class MPSCUnboundedBlockingQueue {
  public:
   /// Put \a element in queue if it's not closed and returns true, if queue is closed returns false.
   bool Put(T element);
@@ -35,7 +35,7 @@ class SPSCUnboundedBlockingQueue {
 };
 
 template <typename T>
-bool SPSCUnboundedBlockingQueue<T>::Put(T element) {
+bool MPSCUnboundedBlockingQueue<T>::Put(T element) {
   {
     std::lock_guard lock{queue_lock_};
 
@@ -52,7 +52,7 @@ bool SPSCUnboundedBlockingQueue<T>::Put(T element) {
 }
 
 template <typename T>
-std::optional<T> SPSCUnboundedBlockingQueue<T>::Take() {
+std::optional<T> MPSCUnboundedBlockingQueue<T>::Take() {
   std::unique_lock lock{queue_lock_};
 
   std::optional<T> element = std::nullopt;
@@ -72,17 +72,17 @@ std::optional<T> SPSCUnboundedBlockingQueue<T>::Take() {
 }
 
 template <typename T>
-void SPSCUnboundedBlockingQueue<T>::Close() {
+void MPSCUnboundedBlockingQueue<T>::Close() {
   CloseImpl(/*need_drain=*/false);
 }
 
 template <typename T>
-void SPSCUnboundedBlockingQueue<T>::Cancel() {
+void MPSCUnboundedBlockingQueue<T>::Cancel() {
   CloseImpl(/*need_drain=*/true);
 }
 
 template <typename T>
-void SPSCUnboundedBlockingQueue<T>::CloseImpl(bool need_drain) {
+void MPSCUnboundedBlockingQueue<T>::CloseImpl(bool need_drain) {
   std::lock_guard lock{queue_lock_};
   is_closed_ = true;
 

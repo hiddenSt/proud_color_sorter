@@ -19,7 +19,7 @@ target_sources(${PROJECT_NAME}_tests
     color_formatter_tests.cpp
     counting_sort_tests.cpp
     order_tests.cpp
-    spsc_queue_tests.cpp
+    mpsc_queue_tests.cpp
 )
 
 enable_sanitizers(${PROJECT_NAME}_tests)

@@ -13,13 +13,9 @@ ChannelSingleton& ChannelSingleton::Get() {
   return *singleton_;
 }
 
-Channel& ChannelSingleton::GetChannel() {
-  return *channel_;
-}
+Channel& ChannelSingleton::GetChannel() { return *channel_; }
 
-void ChannelSingleton::Set(Channel* channel) {
-  channel_ = channel;
-}
+void ChannelSingleton::Set(Channel* channel) { channel_ = channel; }
 
 ChannelSingleton::~ChannelSingleton() {
   if (singleton_ == nullptr) {

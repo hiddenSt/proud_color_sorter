@@ -1,14 +1,14 @@
 #pragma once
 
-#include <vector>
 #include <memory>
+#include <vector>
 
-#include <spsc_queue.hpp>
 #include <color.hpp>
+#include <mpsc_queue.hpp>
 
 namespace proud_color_sorter::utils {
 
-using Channel = SPSCUnboundedBlockingQueue<std::vector<Color>>;
+using Channel = MPSCUnboundedBlockingQueue<std::vector<Color>>;
 
 /// Workaround to be able to cancel channel on signal from user.
 class ChannelSingleton {
@@ -25,9 +25,9 @@ class ChannelSingleton {
   ChannelSingleton() = default;
 
  private:
-   static ChannelSingleton* singleton_;
+  static ChannelSingleton* singleton_;
 
-   Channel* channel_ = nullptr;
+  Channel* channel_ = nullptr;
 };
 
-}
+}  // namespace proud_color_sorter::utils

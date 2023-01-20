@@ -49,7 +49,7 @@ set(sources
     src/counting_sort.hpp
     src/color.hpp
     src/order.hpp
-    src/spsc_queue.hpp
+    src/mpsc_queue.hpp
 )
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${sources})
 

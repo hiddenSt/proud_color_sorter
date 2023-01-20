@@ -1,9 +1,9 @@
 #include <utils/daemon_main.hpp>
 
 #include <array>
+#include <csignal>
 #include <cstdint>
 #include <random>
-#include <csignal>
 #include <thread>
 
 #include <fmt/core.h>
@@ -13,9 +13,8 @@
 #include <color.hpp>
 #include <counting_sort.hpp>
 #include <order.hpp>
-#include <spsc_queue.hpp>
-#include <utils/color_formatter.hpp>
 #include <utils/channel.hpp>
+#include <utils/color_formatter.hpp>
 
 namespace proud_color_sorter::utils {
 
@@ -106,8 +105,8 @@ int DaemonMain(int argc, char* argv[]) {
   });
 
   detail::Consume(channel, color_order);
-  fmt::print("Joining producer thread.");
   producer.join();
+  fmt::print("Threads are stopped.\n");
 
   return EXIT_SUCCESS;
 }
