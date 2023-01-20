@@ -111,4 +111,42 @@ TEST(SPSCQueueTests, concurrent_fifo) {
   producer.join();
 }
 
+TEST(SPSCQueueTests, close_wakes_up_consumer) {
+  SPSCUnboundedBlockingQueue<int> queue;
+
+  std::atomic<bool> is_woke_up = false;
+
+  auto consumer = std::thread([&]() mutable {
+    queue.Take();
+    is_woke_up.store(true);
+  });
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_FALSE(is_woke_up.load());
+  queue.Close();
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_TRUE(is_woke_up.load());
+
+  consumer.join();
+}
+
+TEST(SPSCQueueTests, cancel_wakes_up_consumer) {
+  SPSCUnboundedBlockingQueue<int> queue;
+
+  std::atomic<bool> is_woke_up = false;
+
+  auto consumer = std::thread([&]() mutable {
+    queue.Take();
+    is_woke_up.store(true);
+  });
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_FALSE(is_woke_up.load());
+  queue.Cancel();
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_TRUE(is_woke_up.load());
+
+  consumer.join();
+}
+
 }  // namespace proud_color_sorter::tests
