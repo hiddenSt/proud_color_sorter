@@ -147,7 +147,7 @@ TEST(OrderTest, iterators_preserve_elements_order) {
 
   std::vector<int> collected_from_iterators;
 
-  for (int element: order) {
+  for (int element : order) {
     collected_from_iterators.push_back(element);
   }
 

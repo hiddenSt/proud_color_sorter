@@ -53,16 +53,16 @@ class Order {
 
   /// Returns \a Iterator pointing to the element after the last.
   Iterator end() { return Iterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
-  
+
   /// Returns \a ConstIterator pointing to the fist element.
   ConstIterator cbegin() const { return ConstIterator{rank_to_element_.data()}; }  // NOLINT
 
   /// Returns \a ConstIterator pointing to the element after the last.
   ConstIterator cend() const { return ConstIterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
- 
+
   /// Returns \a ConstIterator pointing to the fist element.
   ConstIterator begin() const { return ConstIterator{rank_to_element_.data()}; }  // NOLINT
-  
+
   /// Returns \a ConstIterator pointing to the element after the last.
   ConstIterator end() const { return ConstIterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
 
