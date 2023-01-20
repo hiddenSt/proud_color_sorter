@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdint>
 #include <random>
+#include <csignal>
 #include <thread>
 
 #include <fmt/core.h>
@@ -14,10 +15,9 @@
 #include <order.hpp>
 #include <spsc_queue.hpp>
 #include <utils/color_formatter.hpp>
+#include <utils/channel.hpp>
 
 namespace proud_color_sorter::utils {
-
-using Channel = SPSCUnboundedBlockingQueue<std::vector<Color>>;
 
 template <typename T>
 struct RandomGenerator {
@@ -61,26 +61,39 @@ void Consume(Channel& channel, const ColorOrder& order) {
 }
 
 struct Config {
-  std::array<Color, kColorCount> color_order;
+  std::array<Color, kColorCount> color_order{Color::kGreen, Color::kBlue, Color::kRed};
   std::size_t generated_seq_max_size = 0;
 };
+
+void SignalHandler(int signal) {
+  if (signal != SIGINT) {
+    return;
+  }
+
+  ChannelSingleton::Get().GetChannel().Cancel();
+}
 
 }  // namespace detail
 
 int DaemonMain(int argc, char* argv[]) {
-  detail::Config config;
+  constexpr std::size_t kMaxGeneratedSequenceLength = 100;
 
+  detail::Config config;
   CLI::App app{"App for sorting random generated colors."};
   app.add_option("--max_size", config.generated_seq_max_size, "Max length of generated color sequence.")
-      ->default_val(100);
+      ->default_val(kMaxGeneratedSequenceLength);
   // app.add_option("--colors_order", );
   CLI11_PARSE(app, argc, argv);
 
-  Channel channel;
   ColorOrder color_order;
-  color_order.Set(Color::kRed, 0);
-  color_order.Set(Color::kGreen, 1);
-  color_order.Set(Color::kBlue, 2);
+
+  for (std::size_t i = 0; i < config.color_order.size(); ++i) {
+    color_order.Set(config.color_order[i], i);
+  }
+
+  Channel channel;
+  ChannelSingleton::Get().Set(&channel);
+  std::signal(SIGINT, ::proud_color_sorter::utils::detail::SignalHandler);
 
   auto producer = std::thread([&channel, config]() mutable {
     std::vector<Color> colors;
@@ -93,6 +106,8 @@ int DaemonMain(int argc, char* argv[]) {
   });
 
   detail::Consume(channel, color_order);
+  fmt::print("Joining producer thread.");
+  producer.join();
 
   return EXIT_SUCCESS;
 }

@@ -91,6 +91,8 @@ void SPSCUnboundedBlockingQueue<T>::CloseImpl(bool need_drain) {
       queue_.pop();
     }
   }
+
+  queue_not_empty_.notify_one();
 }
 
 }  // namespace proud_color_sorter

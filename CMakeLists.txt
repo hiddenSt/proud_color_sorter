@@ -40,6 +40,8 @@ find_package(CLI11 REQUIRED)
 #--------------------------------------------------------------------
 
 set(sources
+    src/utils/channel.hpp
+    src/utils/channel.cpp
     src/utils/color_formatter.hpp
     src/utils/daemon_main.hpp
     src/utils/daemon_main.cpp
