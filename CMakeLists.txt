@@ -88,6 +88,13 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+if (ENABLE_DEVELOPER_MODE)
+  set(Proud_Color_Sorter_WARNINGS_AS_ERRORS ON)
+  set(BUILD_TESTING ON)
+  enable_sanitizers(${PROJECT_NAME}_objs)
+  enable_sanitizers(${PROJECT_NAME})
+endif()
+
 set_project_warnings(
   ${PROJECT_NAME}_objs
   "${Proud_Color_Sorter_WARNINGS_AS_ERRORS}"
@@ -95,13 +102,6 @@ set_project_warnings(
   "${Proud_Color_Sorter_CLANG_WARNINGS}"
   "${Proud_Color_Sorter_GCC_WARNINGS}"
 )
-
-if (ENABLE_DEVELOPER_MODE)
-  set(Proud_Color_Sorter_WARNINGS_AS_ERRORS ON)
-  set(BUILD_TESTING ON)
-  enable_sanitizers(${PROJECT_NAME}_objs)
-  enable_sanitizers(${PROJECT_NAME})
-endif()
 
 #--------------------------------------------------------------------
 # Install set
