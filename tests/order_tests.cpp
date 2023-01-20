@@ -2,6 +2,7 @@
 
 #include <counting_sort.hpp>
 #include <order.hpp>
+#include "color.hpp"
 
 namespace proud_color_sorter::tests {
 
@@ -31,15 +32,126 @@ TEST(OrderTests, iterator) {
 
   auto second = first++;
   EXPECT_EQ(*second, Color::kBlue);
+  EXPECT_EQ(*first, Color::kGreen);
 
   auto third = second++;
   EXPECT_EQ(*third, Color::kBlue);
 
-  EXPECT_EQ(*(--second), Color::kBlue);
+  third += 2;
+  EXPECT_EQ(*third, Color::kRed);
+
+  third -= 1;
+  EXPECT_EQ(*third, Color::kGreen);
+
+  third = ++first;
+  EXPECT_EQ(*third, Color::kRed);
+  EXPECT_EQ(*first, Color::kRed);
+  EXPECT_EQ(first, third);
+  EXPECT_NE(first, second);
+
+  first = colors_order.begin();
+  second = first + 1;
+  third = first + 2;
+
+  EXPECT_LT(first, second);
+  EXPECT_LT(first, third);
+  EXPECT_LT(second, third);
+  EXPECT_EQ(second - first, 1);
+  EXPECT_EQ(third - first, 2);
+  EXPECT_EQ(first - first, 0);
+
+  auto after_last = colors_order.end();
+  EXPECT_NE(after_last, first);
+  EXPECT_GT(after_last, first);
+  EXPECT_GT(after_last, second);
+  EXPECT_GT(after_last, first);
 }
 
 TEST(OrderTests, const_iterator) {
+  Order<Color, kColorCount> colors_order;
+  colors_order.Set(Color::kBlue, 0);
+  colors_order.Set(Color::kGreen, 1);
+  colors_order.Set(Color::kRed, 2);
 
+  auto first = colors_order.cbegin();
+  EXPECT_EQ(*first, Color::kBlue);
+
+  auto second = first++;
+  EXPECT_EQ(*second, Color::kBlue);
+  EXPECT_EQ(*first, Color::kGreen);
+
+  auto third = second++;
+  EXPECT_EQ(*third, Color::kBlue);
+
+  third += 2;
+  EXPECT_EQ(*third, Color::kRed);
+
+  third -= 1;
+  EXPECT_EQ(*third, Color::kGreen);
+
+  third = ++first;
+  EXPECT_EQ(*third, Color::kRed);
+  EXPECT_EQ(*first, Color::kRed);
+  EXPECT_EQ(first, third);
+  EXPECT_NE(first, second);
+
+  first = colors_order.cbegin();
+  second = first + 1;
+  third = first + 2;
+
+  EXPECT_LT(first, second);
+  EXPECT_LT(first, third);
+  EXPECT_LT(second, third);
+  EXPECT_EQ(second - first, 1);
+  EXPECT_EQ(third - first, 2);
+  EXPECT_EQ(first - first, 0);
+
+  auto after_last = colors_order.cend();
+  EXPECT_NE(after_last, first);
+  EXPECT_GT(after_last, first);
+  EXPECT_GT(after_last, second);
+  EXPECT_GT(after_last, first);
+}
+
+TEST(OrderTests, comparison_methods) {
+  Order<Color, kColorCount> colors_order;
+  colors_order.Set(Color::kBlue, 0);
+  colors_order.Set(Color::kGreen, 1);
+  colors_order.Set(Color::kRed, 2);
+
+  EXPECT_TRUE(colors_order.IsEqual(Color::kBlue, Color::kBlue));
+  EXPECT_FALSE(colors_order.IsEqual(Color::kBlue, Color::kRed));
+
+  EXPECT_TRUE(colors_order.IsLess(Color::kBlue, Color::kRed));
+  EXPECT_FALSE(colors_order.IsLess(Color::kRed, Color::kBlue));
+
+  EXPECT_TRUE(colors_order.IsLessOrEqual(Color::kGreen, Color::kRed));
+  EXPECT_TRUE(colors_order.IsLessOrEqual(Color::kGreen, Color::kGreen));
+  EXPECT_FALSE(colors_order.IsLessOrEqual(Color::kGreen, Color::kBlue));
+
+  EXPECT_TRUE(colors_order.IsGreater(Color::kRed, Color::kGreen));
+  EXPECT_FALSE(colors_order.IsGreater(Color::kBlue, Color::kRed));
+
+  EXPECT_TRUE(colors_order.IsGreaterOrEqual(Color::kGreen, Color::kBlue));
+  EXPECT_TRUE(colors_order.IsGreaterOrEqual(Color::kGreen, Color::kGreen));
+  EXPECT_FALSE(colors_order.IsGreaterOrEqual(Color::kBlue, Color::kRed));
+}
+
+TEST(OrderTest, iterators_preserve_elements_order) {
+  Order<int, 5> order;
+  std::vector<int> ordered_seq{3, 4, 6, 7, 9};
+
+  for (std::size_t i = 0; i < ordered_seq.size(); ++i) {
+    order.Set(ordered_seq[i], i);
+  }
+
+  std::vector<int> collected_from_iterators;
+
+  for (int element: order) {
+    collected_from_iterators.push_back(element);
+  }
+
+  EXPECT_EQ(ordered_seq, collected_from_iterators);
 }
 
 }  // namespace proud_color_sorter::tests
