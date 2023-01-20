@@ -3,7 +3,6 @@
 #include <array>
 #include <csignal>
 #include <cstdint>
-#include <random>
 #include <thread>
 
 #include <fmt/core.h>
@@ -15,19 +14,9 @@
 #include <order.hpp>
 #include <utils/channel.hpp>
 #include <utils/color_formatter.hpp>
+#include <utils/random_generator.hpp>
 
 namespace proud_color_sorter::utils {
-
-template <typename T>
-struct RandomGenerator {
-  RandomGenerator(T a, T b) : uniform_distribution(a, b), mersenne_twister(rand_device()) {}
-
-  std::random_device rand_device;
-  std::mt19937 mersenne_twister;
-  std::uniform_int_distribution<std::size_t> uniform_distribution;
-
-  T Generate() { return uniform_distribution(mersenne_twister); }
-};
 
 namespace detail {
 
