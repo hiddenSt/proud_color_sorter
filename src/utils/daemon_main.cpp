@@ -1,5 +1,6 @@
 #include <utils/daemon_main.hpp>
 
+#include <array>
 #include <cstdint>
 #include <random>
 #include <thread>
@@ -59,12 +60,19 @@ void Consume(Channel& channel, const ColorOrder& order) {
   }
 }
 
+struct Config {
+  std::array<Color, kColorCount> color_order;
+  std::size_t generated_seq_max_size = 0;
+};
+
 }  // namespace detail
 
 int DaemonMain(int argc, char* argv[]) {
+  detail::Config config;
+
   CLI::App app{"App for sorting random generated colors."};
-  std::size_t generated_seq_max_size = 0;
-  app.add_option("--max_size", generated_seq_max_size, "Max length of generated color sequence.")->default_val(100);
+  app.add_option("--max_size", config.generated_seq_max_size, "Max length of generated color sequence.")
+      ->default_val(100);
   // app.add_option("--colors_order", );
   CLI11_PARSE(app, argc, argv);
 
@@ -74,9 +82,9 @@ int DaemonMain(int argc, char* argv[]) {
   color_order.Set(Color::kGreen, 1);
   color_order.Set(Color::kBlue, 2);
 
-  auto producer = std::thread([&channel, generated_seq_max_size]() mutable {
+  auto producer = std::thread([&channel, config]() mutable {
     std::vector<Color> colors;
-    RandomGenerator<std::uint64_t> size_generator{1, generated_seq_max_size};
+    RandomGenerator<std::uint64_t> size_generator{1, config.generated_seq_max_size};
     RandomGenerator<std::uint64_t> color_generator{0, kColorCount - 1};
 
     do {

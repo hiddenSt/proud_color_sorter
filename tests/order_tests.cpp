@@ -20,8 +20,26 @@ TEST(OrderTests, order) {
   EXPECT_EQ(colors_order.GetRank(Color::kRed), 2);
 }
 
-TEST(OrderTests, iterator) {}
+TEST(OrderTests, iterator) {
+  Order<Color, kColorCount> colors_order;
+  colors_order.Set(Color::kBlue, 0);
+  colors_order.Set(Color::kGreen, 1);
+  colors_order.Set(Color::kRed, 2);
 
-TEST(OrderTests, const_iterator) {}
+  auto first = colors_order.begin();
+  EXPECT_EQ(*first, Color::kBlue);
+
+  auto second = first++;
+  EXPECT_EQ(*second, Color::kBlue);
+
+  auto third = second++;
+  EXPECT_EQ(*third, Color::kBlue);
+
+  EXPECT_EQ(*(--second), Color::kBlue);
+}
+
+TEST(OrderTests, const_iterator) {
+
+}
 
 }  // namespace proud_color_sorter::tests
