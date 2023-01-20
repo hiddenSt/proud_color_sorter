@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <color.hpp>
 #include <counting_sort.hpp>
 #include <order.hpp>
-#include "color.hpp"
 
 namespace proud_color_sorter::tests {
 
