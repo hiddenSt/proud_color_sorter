@@ -118,9 +118,7 @@ class Order<T, MaxRank>::Iterator {
     return *this;
   }
 
-  reference operator[](difference_type index) {
-    return *(rank_to_element_ptr_ + index);
-  }
+  reference operator[](difference_type index) { return *(rank_to_element_ptr_ + index); }
 
   friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
     return lhs.rank_to_element_ptr_ == rhs.rank_to_element_ptr_;
@@ -212,9 +210,7 @@ class Order<T, MaxRank>::ConstIterator {
     return *this;
   }
 
-  reference operator[](difference_type index) const {
-    return *(rank_to_element_ptr_ + index);
-  }
+  reference operator[](difference_type index) const { return *(rank_to_element_ptr_ + index); }
 
   friend bool operator==(const ConstIterator& lhs, const ConstIterator& rhs) {
     return lhs.rank_to_element_ptr_ == rhs.rank_to_element_ptr_;
