@@ -8,9 +8,9 @@
 
 namespace proud_color_sorter {
 
-using ColorOrder = Order<Color, kColorCount>;
+using ColorOrder = Order<Color, kMaxColorValue>;
 
-/// Sorts \a colors using \a color_order using counting sort algorithm.
+/// Sorts \a colors using \a color_order.
 ///
 /// Creates a new vector of sorted colors.
 /// \note: This task can be solved using `std::sort` like this:

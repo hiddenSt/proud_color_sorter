@@ -4,8 +4,10 @@
 
 namespace proud_color_sorter {
 
-constexpr static std::size_t kColorCount = 3;
+/// Should be up to date with \ref Color, else it will be UB to user the whole app.
+constexpr static std::size_t kMaxColorValue = 3;
 
+/// Possible colors.
 enum class Color : std::uint8_t {
   kRed = 0,
   kGreen = 1,
