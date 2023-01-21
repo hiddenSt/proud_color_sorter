@@ -112,9 +112,14 @@ class Order<T, MaxRank>::Iterator {
     rank_to_element_ptr_ += n;
     return *this;
   }
+
   Iterator& operator-=(difference_type n) {
     rank_to_element_ptr_ -= n;
     return *this;
+  }
+
+  reference operator[](difference_type index) {
+    return *(rank_to_element_ptr_ + index);
   }
 
   friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
@@ -179,6 +184,7 @@ class Order<T, MaxRank>::ConstIterator {
     ++rank_to_element_ptr_;
     return *this;
   }
+
   ConstIterator operator++(int) {
     ConstIterator it{rank_to_element_ptr_};
     ++rank_to_element_ptr_;
@@ -204,6 +210,10 @@ class Order<T, MaxRank>::ConstIterator {
   ConstIterator& operator-=(difference_type n) {
     rank_to_element_ptr_ -= n;
     return *this;
+  }
+
+  reference operator[](difference_type index) const {
+    return *(rank_to_element_ptr_ + index);
   }
 
   friend bool operator==(const ConstIterator& lhs, const ConstIterator& rhs) {
@@ -252,7 +262,6 @@ class Order<T, MaxRank>::ConstIterator {
 
 template <typename T, std::size_t MaxRank>
 void Order<T, MaxRank>::Set(T element, const std::size_t rank) noexcept {
-  // Check if rank is less then MaxRank
   rank_to_element_[rank] = std::move(element);
   element_to_rank_[element] = rank;
 }

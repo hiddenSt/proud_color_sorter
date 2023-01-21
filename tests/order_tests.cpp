@@ -21,7 +21,7 @@ TEST(OrderTests, order) {
   EXPECT_EQ(colors_order.GetRank(Color::kRed), 2);
 }
 
-TEST(OrderTests, iterator) {
+TEST(OrderTests, random_iterator_requirements) {
   Order<Color, kColorCount> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
@@ -65,9 +65,13 @@ TEST(OrderTests, iterator) {
   EXPECT_GT(after_last, first);
   EXPECT_GT(after_last, second);
   EXPECT_GT(after_last, first);
+
+  EXPECT_EQ(first[0], *first);
+  EXPECT_EQ(first[1], *second);
+  EXPECT_EQ(first[2], *third);
 }
 
-TEST(OrderTests, const_iterator) {
+TEST(OrderTests, const_random_iterator_requirements) {
   Order<Color, kColorCount> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
@@ -111,6 +115,10 @@ TEST(OrderTests, const_iterator) {
   EXPECT_GT(after_last, first);
   EXPECT_GT(after_last, second);
   EXPECT_GT(after_last, first);
+
+  EXPECT_EQ(first[0], *first);
+  EXPECT_EQ(first[1], *second);
+  EXPECT_EQ(first[2], *third);
 }
 
 TEST(OrderTests, comparison_methods) {
