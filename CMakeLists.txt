@@ -41,6 +41,8 @@ find_package(CLI11 REQUIRED)
 #--------------------------------------------------------------------
 
 set(sources
+    src/utils/app.hpp
+    src/utils/app.cpp
     src/utils/channel.hpp
     src/utils/channel.cpp
     src/utils/color_formatter.hpp
