@@ -29,8 +29,8 @@ struct fmt::formatter<proud_color_sorter::Color> {
       case proud_color_sorter::Color::kBlue:
         return fmt::format_to(ctx.out(), "B");
     }
-    
-    // Unreachable code. 
+
+    // Unreachable code.
     // Probably, I must use the following macro:
     // https://github.com/hiddenSt/bicycle/blob/dev-initial-setup/bicycle/core/include/bicycle/contract.hpp#L41
     // cause it's readable.

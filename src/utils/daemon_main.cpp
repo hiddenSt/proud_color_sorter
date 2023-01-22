@@ -71,4 +71,4 @@ int DaemonMain(int argc, char* argv[]) {
   return EXIT_SUCCESS;
 }
 
-}  // namespace proud_color_sorter
+}  // namespace proud_color_sorter::utils

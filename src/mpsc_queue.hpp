@@ -11,7 +11,8 @@ namespace proud_color_sorter {
 template <typename T>
 class MPSCUnboundedBlockingQueue {
  public:
-  /// Put an \a element to the queue if it's not closed and returns \c true, if the queue is closed does nothing and returns \c false.
+  /// Put an \a element to the queue if it's not closed and returns \c true, if the queue is closed does nothing and
+  /// returns \c false.
   bool Put(T element);
 
   /// Returns element from the queue head if it's not closed and not empty.
