@@ -7,7 +7,7 @@
 namespace proud_color_sorter::tests {
 
 TEST(OrderTests, order) {
-  Order<Color, kMaxColorValue> colors_order;
+  Order<Color, kColorSize> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
   colors_order.Set(Color::kRed, 2);
@@ -22,7 +22,7 @@ TEST(OrderTests, order) {
 }
 
 TEST(OrderTests, random_iterator_requirements) {
-  Order<Color, kMaxColorValue> colors_order;
+  Order<Color, kColorSize> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
   colors_order.Set(Color::kRed, 2);
@@ -72,7 +72,7 @@ TEST(OrderTests, random_iterator_requirements) {
 }
 
 TEST(OrderTests, const_random_iterator_requirements) {
-  Order<Color, kMaxColorValue> colors_order;
+  Order<Color, kColorSize> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
   colors_order.Set(Color::kRed, 2);
@@ -122,7 +122,7 @@ TEST(OrderTests, const_random_iterator_requirements) {
 }
 
 TEST(OrderTests, comparison_methods) {
-  Order<Color, kMaxColorValue> colors_order;
+  Order<Color, kColorSize> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
   colors_order.Set(Color::kRed, 2);
