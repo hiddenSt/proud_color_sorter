@@ -1,5 +1,6 @@
 #include <utils/app.hpp>
 
+#include <atomic>
 #include <csignal>
 #include <mutex>
 #include <stdexcept>
@@ -10,14 +11,19 @@
 #include <fmt/format.h>
 
 #include <counting_sort.hpp>
+#include <mpsc_queue.hpp>
 #include <order.hpp>
-#include <utils/channel.hpp>
 #include <utils/color_formatter.hpp>
 #include <utils/random_generator.hpp>
 
 namespace proud_color_sorter::utils {
 
+using Channel = MPSCUnboundedBlockingQueue<std::vector<Color>>;
+
 namespace detail {
+
+/// Yeah, bad practice. But i need it to avoid data race and notify producer thread to cancel queue.
+std::atomic<bool> need_stop{false};
 
 class ThreadExceptionHandle {
  public:
@@ -91,7 +97,10 @@ void Produce(Channel& channel, const std::size_t max_seq_length) {
 
   do {
     colors = detail::GenerateColors(size_generator, color_generator);
-  } while (channel.Put(std::move(colors)));
+    channel.Put(std::move(colors));
+  } while (!need_stop.load());
+
+  channel.Cancel();
 }
 
 void SignalHandler(int signal) {
@@ -99,7 +108,7 @@ void SignalHandler(int signal) {
     return;
   }
 
-  ChannelSingleton::Get().GetChannel().Cancel();
+  need_stop.store(true);
 }
 
 }  // namespace detail
@@ -112,7 +121,6 @@ void RunApp(const Config& config) {
   }
 
   Channel channel;
-  ChannelSingleton::Get().Set(&channel);
   std::signal(SIGINT, ::proud_color_sorter::utils::detail::SignalHandler);
   detail::ThreadExceptionHandle producer_exception_handle;
 
