@@ -44,8 +44,6 @@ find_package(CLI11 2.0.0 REQUIRED)
 set(sources
     src/utils/app.hpp
     src/utils/app.cpp
-    src/utils/channel.hpp
-    src/utils/channel.cpp
     src/utils/color_formatter.hpp
     src/utils/daemon_main.hpp
     src/utils/daemon_main.cpp
