@@ -40,7 +40,7 @@ std::array<Color, kColorSize> ParseColorOrderArg(const std::vector<char>& arg) {
 
 }  // namespace detail
 
-int DaemonMain(int argc, char* argv[]) {
+int DaemonMain(int argc, const char* argv[]) {
   constexpr std::size_t kMaxGeneratedSequenceLength = 100;
 
   Config config;
