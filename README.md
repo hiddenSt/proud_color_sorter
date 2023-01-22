@@ -62,10 +62,6 @@ or you can run tests directly by executing the tests binary:
 ./bin/proud_color_sorter_tests
 ```
 
-## Contributing
-
-This project is using [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html). 
-
 ## Installing
 
 You can optionally install the app binary to the desired location, i. e. to a directory which in the system $PATH environment variable.
@@ -95,6 +91,18 @@ Example:<br>
 To run a program, which generates color sequences no longer than 10 elements and sorts them in the following order `red blue green`, you call the app as follows:
 ```shell
 ./pcs --max_size 10 --colors_order r b g
+```
+
+## Contributing
+
+This project is using [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
+To keep code formatting consistent after every commit, there is a [clang-format](https://clang.llvm.org/docs/ClangFormat.html) [config](.clang-format). There is also bash script [.format_code.sh](.format_script.sh) to easily run clang-format. If you are developing on Windows, there is a plugin for VisualStudio.
+
+To meet naming requirements, there is a [config](.clang-tidy) for [clang-tidy](https://clang.llvm.org/extra/clang-tidy/). To easily run clang-tidy on project sources, we provide a cmake custom target called `clang_tidy_check`.
+For example, if you are using ninja build, you can run the following command in your build directory to apply clang-tidy:
+
+```shell
+ninja clang_tidy_check
 ```
 
 ## Contact
