@@ -33,8 +33,8 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
 endif()
 
 find_package(Threads REQUIRED)
-find_package(fmt REQUIRED)
-find_package(CLI11 REQUIRED)
+find_package(fmt 9.0.0 REQUIRED)
+find_package(CLI11 2.0.0 REQUIRED)
 
 #--------------------------------------------------------------------
 # Sources
