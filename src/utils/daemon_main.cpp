@@ -12,7 +12,7 @@
 #include <color.hpp>
 #include <utils/app.hpp>
 
-namespace proud_color_sorter {
+namespace proud_color_sorter::utils {
 
 namespace detail {
 std::array<Color, kMaxColorValue> ParseColorOrderArg(const std::vector<char>& arg) {
@@ -43,7 +43,7 @@ std::array<Color, kMaxColorValue> ParseColorOrderArg(const std::vector<char>& ar
 int DaemonMain(int argc, char* argv[]) {
   constexpr std::size_t kMaxGeneratedSequenceLength = 100;
 
-  proud_color_sorter::utils::Config config;
+  Config config;
   std::vector<char> color_order;
 
   CLI::App app{"App for sorting random generated colors."};
@@ -55,14 +55,14 @@ int DaemonMain(int argc, char* argv[]) {
   CLI11_PARSE(app, argc, argv);
 
   try {
-    config.color_order = proud_color_sorter::detail::ParseColorOrderArg(color_order);
+    config.color_order = detail::ParseColorOrderArg(color_order);
   } catch (const std::exception& error) {
     fmt::print(stderr, error.what());
     return EXIT_FAILURE;
   }
 
   try {
-    proud_color_sorter::utils::RunApp(config);
+    RunApp(config);
   } catch (const std::exception& error) {
     fmt::print(stderr, "Exception caught: {}", error.what());
     return EXIT_FAILURE;
