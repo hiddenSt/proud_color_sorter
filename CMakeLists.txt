@@ -46,6 +46,8 @@ set(sources
     src/utils/channel.hpp
     src/utils/channel.cpp
     src/utils/color_formatter.hpp
+    src/utils/daemon_main.hpp
+    src/utils/daemon_main.cpp
     src/utils/random_generator.hpp
     src/counting_sort.cpp
     src/counting_sort.hpp
@@ -73,6 +75,7 @@ target_include_directories(${PROJECT_NAME}_objs
 target_link_libraries(${PROJECT_NAME}_objs 
   PUBLIC
     Threads::Threads
+    CLI11::CLI11
     fmt::fmt)
 
 target_sources(${PROJECT_NAME}_objs 
@@ -84,7 +87,6 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     ${PROJECT_NAME}_objs
-    CLI11::CLI11
 )
 
 target_include_directories(${PROJECT_NAME}
