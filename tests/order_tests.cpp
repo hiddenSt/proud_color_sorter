@@ -10,7 +10,7 @@ TEST(OrderTests, order) {
   Order<Color, kMaxColorValue> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 3);
+  colors_order.Set(Color::kRed, 2);
 
   EXPECT_EQ(colors_order.GetElement(0), Color::kBlue);
   EXPECT_EQ(colors_order.GetElement(1), Color::kGreen);
@@ -25,7 +25,7 @@ TEST(OrderTests, random_iterator_requirements) {
   Order<Color, kMaxColorValue> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 3);
+  colors_order.Set(Color::kRed, 2);
 
   auto first = colors_order.begin();
   EXPECT_EQ(*first, Color::kBlue);
@@ -75,7 +75,7 @@ TEST(OrderTests, const_random_iterator_requirements) {
   Order<Color, kMaxColorValue> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 3);
+  colors_order.Set(Color::kRed, 2);
 
   auto first = colors_order.cbegin();
   EXPECT_EQ(*first, Color::kBlue);
@@ -125,7 +125,7 @@ TEST(OrderTests, comparison_methods) {
   Order<Color, kMaxColorValue> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 3);
+  colors_order.Set(Color::kRed, 2);
 
   EXPECT_TRUE(colors_order.IsEqual(Color::kBlue, Color::kBlue));
   EXPECT_FALSE(colors_order.IsEqual(Color::kBlue, Color::kRed));
