@@ -19,9 +19,9 @@ namespace proud_color_sorter::utils {
 
 namespace detail {
 
-class ThreadExceptionHandler {
+class ThreadExceptionHandle {
  public:
-  ThreadExceptionHandler() = default;
+  ThreadExceptionHandle() = default;
 
   void Set(std::exception_ptr exception) {
     std::lock_guard lock{exception_lock_};
@@ -114,14 +114,14 @@ void RunApp(const Config& config) {
   Channel channel;
   ChannelSingleton::Get().Set(&channel);
   std::signal(SIGINT, ::proud_color_sorter::utils::detail::SignalHandler);
-  detail::ThreadExceptionHandler producer_exception;
+  detail::ThreadExceptionHandle producer_exception_handle;
 
-  auto producer = std::thread([&channel, config, &producer_exception]() mutable {
+  auto producer = std::thread([&channel, config, &producer_exception_handle]() mutable {
     try {
       detail::Produce(channel, config.generated_seq_max_size);
     } catch (const std::exception&) {
       channel.Cancel();
-      producer_exception.Set(std::current_exception());
+      producer_exception_handle.Set(std::current_exception());
     }
   });
 
@@ -134,8 +134,8 @@ void RunApp(const Config& config) {
 
   producer.join();
 
-  if (!producer_exception.IsEmpty()) {
-    fmt::print(stderr, "Exception caught from producer: {}.", producer_exception.What());
+  if (!producer_exception_handle.IsEmpty()) {
+    fmt::print(stderr, "Exception caught from producer: {}.", producer_exception_handle.What());
   }
 
   fmt::print("Threads are stopped.\n");
