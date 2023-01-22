@@ -7,14 +7,14 @@ namespace proud_color_sorter {
 
 namespace detail {
 
-std::array<std::size_t, kMaxColorValue> CountColors(const std::vector<Color>& colors, const ColorOrder& order) {
-  std::array<std::size_t, kMaxColorValue> color_count;
+std::array<std::size_t, kColorSize> CountColors(const std::vector<Color>& colors, const ColorOrder& order) {
+  std::array<std::size_t, kColorSize> color_count;
 
   for (std::size_t i = 0; i < color_count.size(); ++i) {
     color_count[i] = 0;
   }
 
-  for (const auto& color : colors) {
+  for (const Color color : colors) {
     ++color_count[order.GetRank(color)];
   }
 

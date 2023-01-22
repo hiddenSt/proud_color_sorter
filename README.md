@@ -56,17 +56,25 @@ After this command, app and tests binaries will be placed at `<path_to_your_buil
 
 ## Running tests
 
-To run tests on Linux:
+To build tests binary, you must set cmake option `BUILD_TESTING` to value `ON`.
+
 1. Go to your build directory
 
 2. Run tests using `ctest`
 ```shell
-ctest
+ctest .
 ```
 
 or you can run tests directly by executing the tests binary:
+
+Linux:
 ```shell
 ./bin/proud_color_sorter_tests
+```
+
+Windows:
+```shell
+./bin/<your_build_type>/proud_color_sorter_tests.exe
 ```
 
 ## Installing
@@ -105,7 +113,7 @@ To run a program, which generates color sequences no longer than 10 elements and
 This project is using [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
 To keep code formatting consistent after every commit, there is a [clang-format](https://clang.llvm.org/docs/ClangFormat.html) [config](.clang-format). There is also bash script [.format_code.sh](.format_script.sh) to easily run clang-format. If you are developing on Windows, there is a plugin for VisualStudio.
 
-To meet naming requirements, there is a [config](.clang-tidy) for [clang-tidy](https://clang.llvm.org/extra/clang-tidy/). To easily run clang-tidy on project sources, we provide a cmake custom target called `clang_tidy_check`.
+To meet the naming requirements, there is a [config](.clang-tidy) for [clang-tidy](https://clang.llvm.org/extra/clang-tidy/). To easily run clang-tidy on project sources, we provide a cmake custom target called `clang_tidy_check`.
 For example, if you are using ninja build, you can run the following command in your build directory to apply clang-tidy:
 
 ```shell

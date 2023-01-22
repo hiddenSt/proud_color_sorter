@@ -15,8 +15,8 @@
 namespace proud_color_sorter::utils {
 
 namespace detail {
-std::array<Color, kMaxColorValue> ParseColorOrderArg(const std::vector<char>& arg) {
-  std::array<Color, kMaxColorValue> color_order;
+std::array<Color, kColorSize> ParseColorOrderArg(const std::vector<char>& arg) {
+  std::array<Color, kColorSize> color_order;
   for (std::size_t i = 0; i < arg.size(); ++i) {
     if (arg[i] == 'r') {
       color_order[i] = proud_color_sorter::Color::kRed;
@@ -40,7 +40,7 @@ std::array<Color, kMaxColorValue> ParseColorOrderArg(const std::vector<char>& ar
 
 }  // namespace detail
 
-int DaemonMain(int argc, char* argv[]) {
+int DaemonMain(int argc, const char* argv[]) {
   constexpr std::size_t kMaxGeneratedSequenceLength = 100;
 
   Config config;
@@ -71,4 +71,4 @@ int DaemonMain(int argc, char* argv[]) {
   return EXIT_SUCCESS;
 }
 
-}  // namespace proud_color_sorter
+}  // namespace proud_color_sorter::utils

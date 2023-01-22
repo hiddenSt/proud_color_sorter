@@ -7,7 +7,7 @@
 
 namespace proud_color_sorter {
 
-using ColorOrder = Order<Color, kMaxColorValue>;
+using ColorOrder = Order<Color, kColorSize>;
 
 /// Sorts \a colors using \a color_order.
 ///

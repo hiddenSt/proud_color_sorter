@@ -10,7 +10,7 @@ namespace proud_color_sorter {
 
 /// Stores order of elements of type \a T.
 /// Provides STL-like iterators API to iterate through the order relation.
-template <typename T, std::size_t MaxRank>
+template <typename T, std::size_t SetSize>
 class Order {
  public:
   /// A mutable iterator.
@@ -65,27 +65,27 @@ class Order {
   [[nodiscard]] Iterator begin() { return Iterator{rank_to_element_.data()}; }  // NOLINT
 
   /// Returns \a Iterator pointing to the element after the last.
-  [[nodiscard]] Iterator end() { return Iterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
+  [[nodiscard]] Iterator end() { return Iterator{rank_to_element_.data() + SetSize}; }  // NOLINT
 
   /// Returns \a ConstIterator pointing to the fist element.
   [[nodiscard]] ConstIterator cbegin() const { return ConstIterator{rank_to_element_.data()}; }  // NOLINT
 
   /// Returns \a ConstIterator pointing to the element after the last.
-  [[nodiscard]] ConstIterator cend() const { return ConstIterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
+  [[nodiscard]] ConstIterator cend() const { return ConstIterator{rank_to_element_.data() + SetSize}; }  // NOLINT
 
   /// Returns \a ConstIterator pointing to the fist element.
   [[nodiscard]] ConstIterator begin() const { return ConstIterator{rank_to_element_.data()}; }  // NOLINT
 
   /// Returns \a ConstIterator pointing to the element after the last.
-  [[nodiscard]] ConstIterator end() const { return ConstIterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
+  [[nodiscard]] ConstIterator end() const { return ConstIterator{rank_to_element_.data() + SetSize}; }  // NOLINT
 
  private:
-  std::array<T, MaxRank> rank_to_element_;
+  std::array<T, SetSize> rank_to_element_;
   std::unordered_map<T, std::size_t> element_to_rank_;
 };
 
-template <typename T, std::size_t MaxRank>
-class Order<T, MaxRank>::Iterator {
+template <typename T, std::size_t SetSize>
+class Order<T, SetSize>::Iterator {
  public:
   using iterator_category = std::random_access_iterator_tag;  // NOLINT
   using value_type = T;                                       // NOLINT
@@ -177,8 +177,8 @@ class Order<T, MaxRank>::Iterator {
   T* rank_to_element_ptr_ = nullptr;
 };
 
-template <typename T, std::size_t MaxRank>
-class Order<T, MaxRank>::ConstIterator {
+template <typename T, std::size_t SetSize>
+class Order<T, SetSize>::ConstIterator {
  public:
   using iterator_category = std::random_access_iterator_tag;  // NOLINT
   using value_type = const T;                                 // NOLINT
@@ -269,54 +269,54 @@ class Order<T, MaxRank>::ConstIterator {
   const T* rank_to_element_ptr_ = nullptr;
 };
 
-template <typename T, std::size_t MaxRank>
-void Order<T, MaxRank>::Set(T element, const std::size_t rank) noexcept {
+template <typename T, std::size_t SetSize>
+void Order<T, SetSize>::Set(T element, const std::size_t rank) noexcept {
   rank_to_element_[rank] = std::move(element);
   element_to_rank_[element] = rank;
 }
 
-template <typename T, std::size_t MaxRank>
-std::size_t Order<T, MaxRank>::GetRank(const T& element) const noexcept {
+template <typename T, std::size_t SetSize>
+std::size_t Order<T, SetSize>::GetRank(const T& element) const noexcept {
   return element_to_rank_.at(element);
 }
 
-template <typename T, std::size_t MaxRank>
-T& Order<T, MaxRank>::GetElement(const std::size_t rank) noexcept {
+template <typename T, std::size_t SetSize>
+T& Order<T, SetSize>::GetElement(const std::size_t rank) noexcept {
   return rank_to_element_[rank];
 }
 
-template <typename T, std::size_t MaxRank>
-const T& Order<T, MaxRank>::GetElement(const std::size_t rank) const noexcept {
+template <typename T, std::size_t SetSize>
+const T& Order<T, SetSize>::GetElement(const std::size_t rank) const noexcept {
   return rank_to_element_[rank];
 }
 
-template <typename T, std::size_t MaxRank>
-bool Order<T, MaxRank>::IsEqual(const T& lhs, const T& rhs) const noexcept {
+template <typename T, std::size_t SetSize>
+bool Order<T, SetSize>::IsEqual(const T& lhs, const T& rhs) const noexcept {
   return GetRank(lhs) == GetRank(rhs);
 }
 
-template <typename T, std::size_t MaxRank>
-bool Order<T, MaxRank>::IsNotEqual(const T& lhs, const T& rhs) const noexcept {
+template <typename T, std::size_t SetSize>
+bool Order<T, SetSize>::IsNotEqual(const T& lhs, const T& rhs) const noexcept {
   return GetRank(lhs) != GetRank(rhs);
 }
 
-template <typename T, std::size_t MaxRank>
-bool Order<T, MaxRank>::IsLess(const T& lhs, const T& rhs) const noexcept {
+template <typename T, std::size_t SetSize>
+bool Order<T, SetSize>::IsLess(const T& lhs, const T& rhs) const noexcept {
   return GetRank(lhs) < GetRank(rhs);
 }
 
-template <typename T, std::size_t MaxRank>
-bool Order<T, MaxRank>::IsLessOrEqual(const T& lhs, const T& rhs) const noexcept {
+template <typename T, std::size_t SetSize>
+bool Order<T, SetSize>::IsLessOrEqual(const T& lhs, const T& rhs) const noexcept {
   return GetRank(lhs) <= GetRank(rhs);
 }
 
-template <typename T, std::size_t MaxRank>
-bool Order<T, MaxRank>::IsGreater(const T& lhs, const T& rhs) const noexcept {
+template <typename T, std::size_t SetSize>
+bool Order<T, SetSize>::IsGreater(const T& lhs, const T& rhs) const noexcept {
   return GetRank(lhs) > GetRank(rhs);
 }
 
-template <typename T, std::size_t MaxRank>
-bool Order<T, MaxRank>::IsGreaterOrEqual(const T& lhs, const T& rhs) const noexcept {
+template <typename T, std::size_t SetSize>
+bool Order<T, SetSize>::IsGreaterOrEqual(const T& lhs, const T& rhs) const noexcept {
   return GetRank(lhs) >= GetRank(rhs);
 }
 

@@ -1,5 +1,6 @@
 #include <utils/app.hpp>
 
+#include <atomic>
 #include <csignal>
 #include <mutex>
 #include <stdexcept>
@@ -10,18 +11,23 @@
 #include <fmt/format.h>
 
 #include <counting_sort.hpp>
+#include <mpsc_queue.hpp>
 #include <order.hpp>
-#include <utils/channel.hpp>
 #include <utils/color_formatter.hpp>
 #include <utils/random_generator.hpp>
 
 namespace proud_color_sorter::utils {
 
+using Channel = MPSCUnboundedBlockingQueue<std::vector<Color>>;
+
 namespace detail {
 
-class ThreadExceptionHandler {
+/// Yeah, bad practice. But i need it to avoid data race when notifying producer thread to cancel queue.
+std::atomic<bool> need_stop{false};
+
+class ThreadExceptionHandle {
  public:
-  ThreadExceptionHandler() = default;
+  ThreadExceptionHandle() = default;
 
   void Set(std::exception_ptr exception) {
     std::lock_guard lock{exception_lock_};
@@ -33,7 +39,7 @@ class ThreadExceptionHandler {
     return exception_ == nullptr;
   }
 
-  void Rethrow() {
+  [[noreturn]] void Rethrow() {
     std::lock_guard lock{exception_lock_};
     std::rethrow_exception(exception_);
   }
@@ -87,11 +93,14 @@ void Consume(Channel& channel, const ColorOrder& order) {
 void Produce(Channel& channel, const std::size_t max_seq_length) {
   std::vector<Color> colors;
   RandomGenerator<std::uint64_t> size_generator{1, max_seq_length};
-  RandomGenerator<std::uint64_t> color_generator{0, kMaxColorValue - 1};
+  RandomGenerator<std::uint64_t> color_generator{0, kColorSize - 1};
 
   do {
     colors = detail::GenerateColors(size_generator, color_generator);
-  } while (channel.Put(std::move(colors)));
+    channel.Put(std::move(colors));
+  } while (!need_stop.load());
+
+  channel.Cancel();
 }
 
 void SignalHandler(int signal) {
@@ -99,7 +108,7 @@ void SignalHandler(int signal) {
     return;
   }
 
-  ChannelSingleton::Get().GetChannel().Cancel();
+  need_stop.store(true);
 }
 
 }  // namespace detail
@@ -112,16 +121,15 @@ void RunApp(const Config& config) {
   }
 
   Channel channel;
-  ChannelSingleton::Get().Set(&channel);
   std::signal(SIGINT, ::proud_color_sorter::utils::detail::SignalHandler);
-  detail::ThreadExceptionHandler producer_exception;
+  detail::ThreadExceptionHandle producer_exception_handle;
 
-  auto producer = std::thread([&channel, config, &producer_exception]() mutable {
+  auto producer = std::thread([&channel, config, &producer_exception_handle]() mutable {
     try {
       detail::Produce(channel, config.generated_seq_max_size);
     } catch (const std::exception&) {
       channel.Cancel();
-      producer_exception.Set(std::current_exception());
+      producer_exception_handle.Set(std::current_exception());
     }
   });
 
@@ -134,8 +142,8 @@ void RunApp(const Config& config) {
 
   producer.join();
 
-  if (!producer_exception.IsEmpty()) {
-    fmt::print(stderr, "Exception caught from producer: {}.", producer_exception.What());
+  if (!producer_exception_handle.IsEmpty()) {
+    fmt::print(stderr, "Exception caught from producer: {}.", producer_exception_handle.What());
   }
 
   fmt::print("Threads are stopped.\n");
