@@ -25,14 +25,14 @@ std::array<Color, kMaxColorValue> ParseColorOrderArg(const std::vector<char>& ar
     } else if (arg[i] == 'b') {
       color_order[i] = proud_color_sorter::Color::kBlue;
     } else {
-      throw std::logic_error{"Invalid value for option '--colors_order'. Possible values: 'r, 'g', 'b''\n"};
+      throw std::logic_error{"Invalid value for option '--color_order'. Possible values: 'r, 'g', 'b''\n"};
     }
   }
 
   std::set<char> unique_color{arg.begin(), arg.end()};
 
   if (unique_color.size() != arg.size()) {
-    throw std::logic_error{"Values for option '--colors_order' must be unique.\n"};
+    throw std::logic_error{"Values for option '--color_order' must be unique.\n"};
   }
 
   return color_order;
@@ -49,7 +49,7 @@ int DaemonMain(int argc, char* argv[]) {
   CLI::App app{"App for sorting random generated colors."};
   app.add_option("--max_size", config.generated_seq_max_size, "Max length of generated color sequence.")
       ->default_val(kMaxGeneratedSequenceLength);
-  app.add_option("--colors_order", color_order, "Elements order. Possible values: 'r', 'g', 'b'")
+  app.add_option("--color_order", color_order, "Color order. Possible values: 'r', 'g', 'b'.")
       ->expected(config.color_order.size())
       ->required();
   CLI11_PARSE(app, argc, argv);
@@ -70,4 +70,5 @@ int DaemonMain(int argc, char* argv[]) {
 
   return EXIT_SUCCESS;
 }
+
 }  // namespace proud_color_sorter

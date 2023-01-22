@@ -8,7 +8,7 @@
 
 namespace proud_color_sorter {
 
-/// Stores order of elements of a type \a T.
+/// Stores order of elements of type \a T.
 /// Provides STL-like iterators API to iterate through the order relation.
 template <typename T, std::size_t MaxRank>
 class Order {
