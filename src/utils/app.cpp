@@ -22,7 +22,7 @@ using Channel = MPSCUnboundedBlockingQueue<std::vector<Color>>;
 
 namespace detail {
 
-/// Yeah, bad practice. But i need it to avoid data race and notify producer thread to cancel queue.
+/// Yeah, bad practice. But i need it to avoid data race when notifying producer thread to cancel queue.
 std::atomic<bool> need_stop{false};
 
 class ThreadExceptionHandle {
