@@ -33,7 +33,7 @@ class ThreadExceptionHandle {
     return exception_ == nullptr;
   }
 
-  void Rethrow() {
+  [[noreturn]] void Rethrow() {
     std::lock_guard lock{exception_lock_};
     std::rethrow_exception(exception_);
   }
