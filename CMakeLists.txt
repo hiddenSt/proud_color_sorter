@@ -94,6 +94,8 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "pcs")
+
 if (ENABLE_DEVELOPER_MODE)
   set(Proud_Color_Sorter_WARNINGS_AS_ERRORS ON)
   set(BUILD_TESTING ON)
