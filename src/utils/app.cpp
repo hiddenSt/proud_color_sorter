@@ -28,7 +28,7 @@ class ThreadExceptionHandler {
     exception_ = exception;
   }
 
-  bool IsEmpty() {
+  [[nodiscard]] bool IsEmpty() {
     std::lock_guard lock{exception_lock_};
     return exception_ == nullptr;
   }
@@ -38,7 +38,7 @@ class ThreadExceptionHandler {
     std::rethrow_exception(exception_);
   }
 
-  std::string What() {
+  [[nodiscard]] std::string What() {
     std::lock_guard lock{exception_lock_};
     std::string message;
 
@@ -87,7 +87,7 @@ void Consume(Channel& channel, const ColorOrder& order) {
 void Produce(Channel& channel, const std::size_t max_seq_length) {
   std::vector<Color> colors;
   RandomGenerator<std::uint64_t> size_generator{1, max_seq_length};
-  RandomGenerator<std::uint64_t> color_generator{0, kColorCount - 1};
+  RandomGenerator<std::uint64_t> color_generator{0, kMaxColorValue - 1};
 
   do {
     colors = detail::GenerateColors(size_generator, color_generator);

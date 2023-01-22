@@ -8,7 +8,7 @@
 namespace proud_color_sorter::utils {
 
 struct Config {
-  std::array<Color, kColorCount> color_order{Color::kRed, Color::kGreen, Color::kBlue};
+  std::array<Color, kMaxColorValue> color_order{Color::kRed, Color::kGreen, Color::kBlue};
   std::size_t generated_seq_max_size = 0;
 };
 
