@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <limits>
 #include <cstdlib>
+#include <limits>
 #include <utils/daemon_main.hpp>
 
 namespace proud_color_sorter::utils::tests {
@@ -12,7 +12,7 @@ TEST(DaemonMainTests, no_color_order_option) {
 }
 
 TEST(DaemonMainTests, invalid_color_order_element) {
-  const char * params[] = {"pcs", "--color_order", "r", "h", "b"};
+  const char* params[] = {"pcs", "--color_order", "r", "h", "b"};
   EXPECT_NE(DaemonMain(5, params), EXIT_SUCCESS);
 }
 
