@@ -2,234 +2,282 @@
 
 #include <array>
 #include <cstddef>
+#include <initializer_list>
 #include <iterator>
+#include <unordered_map>
 
 namespace proud_color_sorter {
 
 /// Stores order of elements of type \a T.
-/// Provides STL-like iterators API to iterate through order relation.
+/// Provides STL-like iterators API to iterate through the order relation.
 template <typename T, std::size_t MaxRank>
 class Order {
  public:
+  /// A mutable iterator.
+  class Iterator;
+
+  /// An immutable iterator.
+  class ConstIterator;
+
+  Order() = default;
+
+  Order(const Order& other) = default;
+
+  Order(Order&& other) noexcept = default;
+
+  Order& operator=(const Order& other) = default;
+
+  Order& operator=(Order&& order) noexcept = default;
+
+  ~Order() = default;
+
   /// Sets map between \a element and \a rank.
   void Set(T element, const std::size_t rank) noexcept;
 
-  /// Returns rank of \a element
-  std::size_t GetRank(const T& element) const noexcept;
+  /// Returns rank of an \a element
+  [[nodiscard]] std::size_t GetRank(const T& element) const noexcept;
 
-  /// Returns element by \a rank
+  /// Returns an element, which rank is equal to \a rank
   T& GetElement(const std::size_t rank) noexcept;
 
-  /// Returns const reference to element by \a rank
+  /// Returns a const reference to the element by \a rank
   const T& GetElement(const std::size_t rank) const noexcept;
 
   /// Returns \c true if \a lhs rank is equal to \a rhs rank, returns \c false otherwise.
-  bool IsEqual(const T& lhs, const T& rhs) const noexcept;
+  [[nodiscard]] bool IsEqual(const T& lhs, const T& rhs) const noexcept;
 
   /// Returns \c true if \a lhs is not equal to \a rhs rank, returns \c false otherwise.
-  bool IsNotEqual(const T& lhs, const T& rhs) const noexcept;
+  [[nodiscard]] bool IsNotEqual(const T& lhs, const T& rhs) const noexcept;
 
   /// Returns \c true if \a lhs rank is less than \a rhs rank, returns \c false otherwise.
-  bool IsLess(const T& lhs, const T& rhs) const noexcept;
+  [[nodiscard]] bool IsLess(const T& lhs, const T& rhs) const noexcept;
 
   /// Returns \c true if \a lhs rank is less or equal to \a rhs rank, returns \c false otherwise.
-  bool IsLessOrEqual(const T& lhs, const T& rhs) const noexcept;
+  [[nodiscard]] bool IsLessOrEqual(const T& lhs, const T& rhs) const noexcept;
 
   /// Returns \c true if \a lhs is greater than \a rhs, returns \c false otherwise.
-  bool IsGreater(const T& lhs, const T& rhs) const noexcept;
+  [[nodiscard]] bool IsGreater(const T& lhs, const T& rhs) const noexcept;
 
   /// Returns \c true if \a lhs is greater or less than \a rhs, returns \c false otherwise.
-  bool IsGreaterOrEqual(const T& lhs, const T& rhs) const noexcept;
-
-  /// Mutable iterator.
-  class Iterator {
-   public:
-    using iterator_category = std::random_access_iterator_tag;  // NOLINT
-    using value_type = T;                                       // NOLINT
-    using pointer = value_type*;                                // NOLINT
-    using reference = value_type&;                              // NOLINT
-    using difference_type = std::ptrdiff_t;                     // NOLINT
-
-    explicit Iterator(T* rank_to_element) : rank_to_element_ptr_(rank_to_element) {}
-
-    reference operator*() const { return *rank_to_element_ptr_; }
-    pointer operator->() { return rank_to_element_ptr_; }
-
-    Iterator& operator++() {
-      ++rank_to_element_ptr_;
-      return *this;
-    }
-
-    Iterator operator++(int) {
-      Iterator it = Iterator{rank_to_element_ptr_};
-      ++rank_to_element_ptr_;
-      return it;
-    }
-
-    Iterator& operator--() {
-      --rank_to_element_ptr_;
-      return *this;
-    }
-
-    Iterator operator--(int) {
-      Iterator it = Iterator{rank_to_element_ptr_};
-      --rank_to_element_ptr_;
-      return it;
-    }
-
-    Iterator& operator+=(difference_type n) {
-      rank_to_element_ptr_ += n;
-      return *this;
-    }
-    Iterator& operator-=(difference_type n) {
-      rank_to_element_ptr_ -= n;
-      return *this;
-    }
-
-    friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
-      return lhs.rank_to_element_ptr_ == rhs.rank_to_element_ptr_;
-    }
-    friend bool operator!=(const Iterator& lhs, const Iterator& rhs) {
-      return lhs.rank_to_element_ptr_ != rhs.rank_to_element_ptr_;
-    }
-    friend bool operator<(const Iterator& lhs, const Iterator& rhs) {
-      return lhs.rank_to_element_ptr_ < rhs.rank_to_element_ptr_;
-    }
-    friend bool operator<=(const Iterator& lhs, const Iterator& rhs) {
-      return lhs.rank_to_element_ptr_ <= rhs.rank_to_element_ptr_;
-    }
-    friend bool operator>(const Iterator& lhs, const Iterator& rhs) {
-      return lhs.rank_to_element_ptr_ > rhs.rank_to_element_ptr_;
-    }
-    friend bool operator>=(const Iterator& lhs, const Iterator& rhs) {
-      return lhs.rank_to_element_ptr_ >= rhs.rank_to_element_ptr_;
-    }
-
-    friend Iterator operator+(const Iterator& lhs, difference_type rhs) {
-      return Iterator{lhs.rank_to_element_ptr_ + rhs};
-    }
-    friend Iterator operator+(difference_type lhs, const Iterator& rhs) {
-      return Iterator{rhs.rank_to_element_ptr_ + lhs};
-    }
-    friend Iterator operator-(const Iterator& lhs, difference_type rhs) {
-      return Iterator{lhs.rank_to_element_ptr_ - rhs};
-    }
-    friend difference_type operator-(const Iterator& lhs, const Iterator& rhs) {
-      return lhs.rank_to_element_ptr_ - rhs.rank_to_element_ptr_;
-    }
-
-   private:
-    T* rank_to_element_ptr_ = nullptr;
-  };
-
-  /// Immutable iterator.
-  class ConstIterator {
-   public:
-    using iterator_category = std::random_access_iterator_tag;  // NOLINT
-    using value_type = const T;                                 // NOLINT
-    using pointer = value_type*;                                // NOLINT
-    using reference = value_type&;                              // NOLINT
-    using difference_type = std::ptrdiff_t;                     // NOLINT
-
-    explicit ConstIterator(const T* rank_to_element) : rank_to_element_ptr_(rank_to_element) {}
-
-    reference operator*() const { return *rank_to_element_ptr_; }
-    pointer operator->() const { return rank_to_element_ptr_; }
-
-    ConstIterator& operator++() {
-      ++rank_to_element_ptr_;
-      return *this;
-    }
-    ConstIterator operator++(int) {
-      ConstIterator it{rank_to_element_ptr_};
-      ++rank_to_element_ptr_;
-      return it;
-    }
-
-    ConstIterator& operator--() {
-      --rank_to_element_ptr_;
-      return *this;
-    }
-    ConstIterator operator--(int) {
-      ConstIterator it{rank_to_element_ptr_};
-      --rank_to_element_ptr_;
-      return it;
-    }
-
-    ConstIterator& operator+=(difference_type n) {
-      rank_to_element_ptr_ += n;
-      return *this;
-    }
-    ConstIterator& operator-=(difference_type n) {
-      rank_to_element_ptr_ -= n;
-      return *this;
-    }
-
-    friend bool operator==(const ConstIterator& lhs, const ConstIterator& rhs) {
-      return lhs.rank_to_element_ptr_ == rhs.rank_to_element_ptr_;
-    }
-    friend bool operator!=(const ConstIterator& lhs, const ConstIterator& rhs) {
-      return lhs.rank_to_element_ptr_ != rhs.rank_to_element_ptr_;
-    }
-    friend bool operator<(const ConstIterator& lhs, const ConstIterator& rhs) {
-      return lhs.rank_to_element_ptr_ < rhs.rank_to_element_ptr_;
-    }
-    friend bool operator<=(const ConstIterator& lhs, const ConstIterator& rhs) {
-      return lhs.rank_to_element_ptr_ <= rhs.rank_to_element_ptr_;
-    }
-    friend bool operator>(const ConstIterator& lhs, const ConstIterator& rhs) {
-      return lhs.rank_to_element_ptr_ > rhs.rank_to_element_ptr_;
-    }
-    friend bool operator>=(const ConstIterator& lhs, const ConstIterator& rhs) {
-      return lhs.rank_to_element_ptr_ >= rhs.rank_to_element_ptr_;
-    }
-
-    friend ConstIterator operator+(const ConstIterator& lhs, difference_type rhs) {
-      return ConstIterator{lhs.rank_to_element_ptr_ + rhs};
-    }
-    friend ConstIterator operator+(difference_type lhs, const ConstIterator& rhs) {
-      return ConstIterator{rhs.rank_to_element_ptr_ + lhs};
-    }
-    friend ConstIterator operator-(const ConstIterator& lhs, difference_type rhs) {
-      return ConstIterator{lhs.rank_to_element_ptr_ - rhs};
-    }
-    friend difference_type operator-(const ConstIterator& lhs, const ConstIterator& rhs) {
-      return lhs.rank_to_element_ptr_ - rhs.rank_to_element_ptr_;
-    }
-
-   private:
-    const T* rank_to_element_ptr_ = nullptr;
-  };
+  [[nodiscard]] bool IsGreaterOrEqual(const T& lhs, const T& rhs) const noexcept;
 
   /// Returns \a Iterator pointing to the beginning of order.
-  Iterator begin() { return Iterator{rank_to_element_.data()}; }  // NOLINT
+  [[nodiscard]] Iterator begin() { return Iterator{rank_to_element_.data()}; }  // NOLINT
 
-  /// Returns \a Iterator pointing to the element after the last of sequence.
-  Iterator end() { return Iterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
+  /// Returns \a Iterator pointing to the element after the last.
+  [[nodiscard]] Iterator end() { return Iterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
 
-  ConstIterator cbegin() const { return ConstIterator{rank_to_element_.data()}; }  // NOLINT
+  /// Returns \a ConstIterator pointing to the fist element.
+  [[nodiscard]] ConstIterator cbegin() const { return ConstIterator{rank_to_element_.data()}; }  // NOLINT
 
-  ConstIterator cend() const { return ConstIterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
+  /// Returns \a ConstIterator pointing to the element after the last.
+  [[nodiscard]] ConstIterator cend() const { return ConstIterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
 
-  ConstIterator begin() const { return ConstIterator{rank_to_element_.data()}; }  // NOLINT
+  /// Returns \a ConstIterator pointing to the fist element.
+  [[nodiscard]] ConstIterator begin() const { return ConstIterator{rank_to_element_.data()}; }  // NOLINT
 
-  ConstIterator end() const { return ConstIterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
+  /// Returns \a ConstIterator pointing to the element after the last.
+  [[nodiscard]] ConstIterator end() const { return ConstIterator{rank_to_element_.data() + MaxRank}; }  // NOLINT
 
  private:
   std::array<T, MaxRank> rank_to_element_;
-  std::array<std::size_t, MaxRank> element_to_rank_;
+  std::unordered_map<T, std::size_t> element_to_rank_;
+};
+
+template <typename T, std::size_t MaxRank>
+class Order<T, MaxRank>::Iterator {
+ public:
+  using iterator_category = std::random_access_iterator_tag;  // NOLINT
+  using value_type = T;                                       // NOLINT
+  using pointer = value_type*;                                // NOLINT
+  using reference = value_type&;                              // NOLINT
+  using difference_type = std::ptrdiff_t;                     // NOLINT
+
+  explicit Iterator(T* rank_to_element) : rank_to_element_ptr_(rank_to_element) {}
+
+  reference operator*() const { return *rank_to_element_ptr_; }
+
+  pointer operator->() { return rank_to_element_ptr_; }
+
+  Iterator& operator++() {
+    ++rank_to_element_ptr_;
+    return *this;
+  }
+
+  [[nodiscard]] Iterator operator++(int) {
+    Iterator it = Iterator{rank_to_element_ptr_};
+    ++rank_to_element_ptr_;
+    return it;
+  }
+
+  Iterator& operator--() {
+    --rank_to_element_ptr_;
+    return *this;
+  }
+
+  [[nodiscard]] Iterator operator--(int) {
+    Iterator it = Iterator{rank_to_element_ptr_};
+    --rank_to_element_ptr_;
+    return it;
+  }
+
+  Iterator& operator+=(difference_type n) {
+    rank_to_element_ptr_ += n;
+    return *this;
+  }
+
+  Iterator& operator-=(difference_type n) {
+    rank_to_element_ptr_ -= n;
+    return *this;
+  }
+
+  reference operator[](difference_type index) { return *(rank_to_element_ptr_ + index); }
+
+  [[nodiscard]] friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
+    return lhs.rank_to_element_ptr_ == rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator!=(const Iterator& lhs, const Iterator& rhs) {
+    return lhs.rank_to_element_ptr_ != rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator<(const Iterator& lhs, const Iterator& rhs) {
+    return lhs.rank_to_element_ptr_ < rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator<=(const Iterator& lhs, const Iterator& rhs) {
+    return lhs.rank_to_element_ptr_ <= rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator>(const Iterator& lhs, const Iterator& rhs) {
+    return lhs.rank_to_element_ptr_ > rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator>=(const Iterator& lhs, const Iterator& rhs) {
+    return lhs.rank_to_element_ptr_ >= rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend Iterator operator+(const Iterator& lhs, difference_type rhs) {
+    return Iterator{lhs.rank_to_element_ptr_ + rhs};
+  }
+
+  [[nodiscard]] friend Iterator operator+(difference_type lhs, const Iterator& rhs) {
+    return Iterator{rhs.rank_to_element_ptr_ + lhs};
+  }
+
+  [[nodiscard]] friend Iterator operator-(const Iterator& lhs, difference_type rhs) {
+    return Iterator{lhs.rank_to_element_ptr_ - rhs};
+  }
+
+  [[nodiscard]] friend difference_type operator-(const Iterator& lhs, const Iterator& rhs) {
+    return lhs.rank_to_element_ptr_ - rhs.rank_to_element_ptr_;
+  }
+
+ private:
+  T* rank_to_element_ptr_ = nullptr;
+};
+
+template <typename T, std::size_t MaxRank>
+class Order<T, MaxRank>::ConstIterator {
+ public:
+  using iterator_category = std::random_access_iterator_tag;  // NOLINT
+  using value_type = const T;                                 // NOLINT
+  using pointer = value_type*;                                // NOLINT
+  using reference = value_type&;                              // NOLINT
+  using difference_type = std::ptrdiff_t;                     // NOLINT
+
+  explicit ConstIterator(const T* rank_to_element) : rank_to_element_ptr_(rank_to_element) {}
+
+  reference operator*() const { return *rank_to_element_ptr_; }
+  pointer operator->() const { return rank_to_element_ptr_; }
+
+  ConstIterator& operator++() {
+    ++rank_to_element_ptr_;
+    return *this;
+  }
+
+  [[nodiscard]] ConstIterator operator++(int) {
+    ConstIterator it{rank_to_element_ptr_};
+    ++rank_to_element_ptr_;
+    return it;
+  }
+
+  ConstIterator& operator--() {
+    --rank_to_element_ptr_;
+    return *this;
+  }
+
+  [[nodiscard]] ConstIterator operator--(int) {
+    ConstIterator it{rank_to_element_ptr_};
+    --rank_to_element_ptr_;
+    return it;
+  }
+
+  ConstIterator& operator+=(difference_type n) {
+    rank_to_element_ptr_ += n;
+    return *this;
+  }
+
+  ConstIterator& operator-=(difference_type n) {
+    rank_to_element_ptr_ -= n;
+    return *this;
+  }
+
+  reference operator[](difference_type index) const { return *(rank_to_element_ptr_ + index); }
+
+  [[nodiscard]] friend bool operator==(const ConstIterator& lhs, const ConstIterator& rhs) {
+    return lhs.rank_to_element_ptr_ == rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator!=(const ConstIterator& lhs, const ConstIterator& rhs) {
+    return lhs.rank_to_element_ptr_ != rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator<(const ConstIterator& lhs, const ConstIterator& rhs) {
+    return lhs.rank_to_element_ptr_ < rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator<=(const ConstIterator& lhs, const ConstIterator& rhs) {
+    return lhs.rank_to_element_ptr_ <= rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator>(const ConstIterator& lhs, const ConstIterator& rhs) {
+    return lhs.rank_to_element_ptr_ > rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend bool operator>=(const ConstIterator& lhs, const ConstIterator& rhs) {
+    return lhs.rank_to_element_ptr_ >= rhs.rank_to_element_ptr_;
+  }
+
+  [[nodiscard]] friend ConstIterator operator+(const ConstIterator& lhs, difference_type rhs) {
+    return ConstIterator{lhs.rank_to_element_ptr_ + rhs};
+  }
+
+  [[nodiscard]] friend ConstIterator operator+(difference_type lhs, const ConstIterator& rhs) {
+    return ConstIterator{rhs.rank_to_element_ptr_ + lhs};
+  }
+
+  [[nodiscard]] friend ConstIterator operator-(const ConstIterator& lhs, difference_type rhs) {
+    return ConstIterator{lhs.rank_to_element_ptr_ - rhs};
+  }
+
+  [[nodiscard]] friend difference_type operator-(const ConstIterator& lhs, const ConstIterator& rhs) {
+    return lhs.rank_to_element_ptr_ - rhs.rank_to_element_ptr_;
+  }
+
+ private:
+  const T* rank_to_element_ptr_ = nullptr;
 };
 
 template <typename T, std::size_t MaxRank>
 void Order<T, MaxRank>::Set(T element, const std::size_t rank) noexcept {
-  // Check if rank is less then MaxRank
   rank_to_element_[rank] = std::move(element);
-  element_to_rank_[static_cast<std::size_t>(rank_to_element_[rank])] = rank;
+  element_to_rank_[element] = rank;
 }
 
 template <typename T, std::size_t MaxRank>
 std::size_t Order<T, MaxRank>::GetRank(const T& element) const noexcept {
-  return element_to_rank_[static_cast<std::size_t>(element)];
+  return element_to_rank_.at(element);
 }
 
 template <typename T, std::size_t MaxRank>
@@ -244,32 +292,32 @@ const T& Order<T, MaxRank>::GetElement(const std::size_t rank) const noexcept {
 
 template <typename T, std::size_t MaxRank>
 bool Order<T, MaxRank>::IsEqual(const T& lhs, const T& rhs) const noexcept {
-  return element_to_rank_[static_cast<std::size_t>(lhs)] == element_to_rank_[static_cast<std::size_t>(rhs)];
+  return GetRank(lhs) == GetRank(rhs);
 }
 
 template <typename T, std::size_t MaxRank>
 bool Order<T, MaxRank>::IsNotEqual(const T& lhs, const T& rhs) const noexcept {
-  return element_to_rank_[static_cast<std::size_t>(lhs)] != element_to_rank_[static_cast<std::size_t>(rhs)];
+  return GetRank(lhs) != GetRank(rhs);
 }
 
 template <typename T, std::size_t MaxRank>
 bool Order<T, MaxRank>::IsLess(const T& lhs, const T& rhs) const noexcept {
-  return element_to_rank_[static_cast<std::size_t>(lhs)] < element_to_rank_[static_cast<std::size_t>(rhs)];
+  return GetRank(lhs) < GetRank(rhs);
 }
 
 template <typename T, std::size_t MaxRank>
 bool Order<T, MaxRank>::IsLessOrEqual(const T& lhs, const T& rhs) const noexcept {
-  return element_to_rank_[static_cast<std::size_t>(lhs)] <= element_to_rank_[static_cast<std::size_t>(rhs)];
+  return GetRank(lhs) <= GetRank(rhs);
 }
 
 template <typename T, std::size_t MaxRank>
 bool Order<T, MaxRank>::IsGreater(const T& lhs, const T& rhs) const noexcept {
-  return element_to_rank_[static_cast<std::size_t>(lhs)] > element_to_rank_[static_cast<std::size_t>(rhs)];
+  return GetRank(lhs) > GetRank(rhs);
 }
 
 template <typename T, std::size_t MaxRank>
 bool Order<T, MaxRank>::IsGreaterOrEqual(const T& lhs, const T& rhs) const noexcept {
-  return element_to_rank_[static_cast<std::size_t>(lhs)] >= element_to_rank_[static_cast<std::size_t>(rhs)];
+  return GetRank(lhs) >= GetRank(rhs);
 }
 
 }  // namespace proud_color_sorter

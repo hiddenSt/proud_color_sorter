@@ -1,100 +1,74 @@
 #include <utils/daemon_main.hpp>
 
-#include <array>
-#include <cstdint>
-#include <random>
-#include <thread>
+#include <cstdlib>
+#include <set>
+#include <stdexcept>
+#include <vector>
 
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <CLI/CLI.hpp>
 
 #include <color.hpp>
-#include <counting_sort.hpp>
-#include <order.hpp>
-#include <spsc_queue.hpp>
-#include <utils/color_formatter.hpp>
+#include <utils/app.hpp>
 
 namespace proud_color_sorter::utils {
 
-using Channel = SPSCUnboundedBlockingQueue<std::vector<Color>>;
-
-template <typename T>
-struct RandomGenerator {
-  RandomGenerator(T a, T b) : uniform_distribution(a, b), mersenne_twister(rand_device()) {}
-
-  std::random_device rand_device;
-  std::mt19937 mersenne_twister;
-  std::uniform_int_distribution<std::size_t> uniform_distribution;
-
-  T Generate() { return uniform_distribution(mersenne_twister); }
-};
-
 namespace detail {
-
-std::vector<Color> GenerateColors(RandomGenerator<std::uint64_t>& size_generator,
-                                  RandomGenerator<std::uint64_t>& color_generator) {
-  auto color_size = size_generator.Generate();
-  std::vector<Color> colors;
-  colors.reserve(color_size);
-
-  for (std::size_t i = 0; i < color_size; ++i) {
-    auto generated = color_generator.Generate();
-    colors.emplace_back(static_cast<Color>(generated));
-  }
-
-  return colors;
-}
-
-void Consume(Channel& channel, const ColorOrder& order) {
-  while (true) {
-    auto colors = channel.Take();
-
-    if (!colors.has_value()) {
-      return;
+std::array<Color, kMaxColorValue> ParseColorOrderArg(const std::vector<char>& arg) {
+  std::array<Color, kMaxColorValue> color_order;
+  for (std::size_t i = 0; i < arg.size(); ++i) {
+    if (arg[i] == 'r') {
+      color_order[i] = proud_color_sorter::Color::kRed;
+    } else if (arg[i] == 'g') {
+      color_order[i] = proud_color_sorter::Color::kGreen;
+    } else if (arg[i] == 'b') {
+      color_order[i] = proud_color_sorter::Color::kBlue;
+    } else {
+      throw std::logic_error{"Invalid value for option '--color_order'. Possible values: 'r, 'g', 'b''\n"};
     }
-
-    fmt::print("Generated colors (size={}): {} \n", colors->size(), fmt::join(colors.value(), " "));
-    auto sorted_colors = CountingSort(colors.value(), order);
-    fmt::print("Sorted colors (size={}): {} \n", sorted_colors.size(), fmt::join(sorted_colors, " "));
   }
-}
 
-struct Config {
-  std::array<Color, kColorCount> color_order;
-  std::size_t generated_seq_max_size = 0;
-};
+  std::set<char> unique_color{arg.begin(), arg.end()};
+
+  if (unique_color.size() != arg.size()) {
+    throw std::logic_error{"Values for option '--color_order' must be unique.\n"};
+  }
+
+  return color_order;
+}
 
 }  // namespace detail
 
 int DaemonMain(int argc, char* argv[]) {
-  detail::Config config;
+  constexpr std::size_t kMaxGeneratedSequenceLength = 100;
+
+  Config config;
+  std::vector<char> color_order;
 
   CLI::App app{"App for sorting random generated colors."};
   app.add_option("--max_size", config.generated_seq_max_size, "Max length of generated color sequence.")
-      ->default_val(100);
-  // app.add_option("--colors_order", );
+      ->default_val(kMaxGeneratedSequenceLength);
+  app.add_option("--color_order", color_order, "Color order. Possible values: 'r', 'g', 'b'.")
+      ->expected(config.color_order.size())
+      ->required();
   CLI11_PARSE(app, argc, argv);
 
-  Channel channel;
-  ColorOrder color_order;
-  color_order.Set(Color::kRed, 0);
-  color_order.Set(Color::kGreen, 1);
-  color_order.Set(Color::kBlue, 2);
+  try {
+    config.color_order = detail::ParseColorOrderArg(color_order);
+  } catch (const std::exception& error) {
+    fmt::print(stderr, error.what());
+    return EXIT_FAILURE;
+  }
 
-  auto producer = std::thread([&channel, config]() mutable {
-    std::vector<Color> colors;
-    RandomGenerator<std::uint64_t> size_generator{1, config.generated_seq_max_size};
-    RandomGenerator<std::uint64_t> color_generator{0, kColorCount - 1};
-
-    do {
-      colors = detail::GenerateColors(size_generator, color_generator);
-    } while (channel.Put(std::move(colors)));
-  });
-
-  detail::Consume(channel, color_order);
+  try {
+    RunApp(config);
+  } catch (const std::exception& error) {
+    fmt::print(stderr, "Exception caught: {}", error.what());
+    return EXIT_FAILURE;
+  }
 
   return EXIT_SUCCESS;
 }
 
-}  // namespace proud_color_sorter::utils
+}  // namespace proud_color_sorter

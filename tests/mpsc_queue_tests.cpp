@@ -4,18 +4,18 @@
 
 #include <gtest/gtest.h>
 
-#include <spsc_queue.hpp>
+#include <mpsc_queue.hpp>
 
 namespace proud_color_sorter::tests {
 
-TEST(SPSCQueueTests, put) {
-  SPSCUnboundedBlockingQueue<int> queue;
+TEST(MPSCQueueTests, put) {
+  MPSCUnboundedBlockingQueue<int> queue;
 
   ASSERT_TRUE(queue.Put(1));
 }
 
-TEST(SPSCQueueTests, take_on_not_empty_queue) {
-  SPSCUnboundedBlockingQueue<int> queue;
+TEST(MPSCQueueTests, take_on_not_empty_queue) {
+  MPSCUnboundedBlockingQueue<int> queue;
   ASSERT_TRUE(queue.Put(1));
 
   auto element = queue.Take();
@@ -23,8 +23,8 @@ TEST(SPSCQueueTests, take_on_not_empty_queue) {
   ASSERT_EQ(element.value(), 1);
 }
 
-TEST(SPSCQueueTests, take_blocks_caller_on_empty_queue) {
-  SPSCUnboundedBlockingQueue<int> queue;
+TEST(MPSCQueueTests, take_blocks_caller_on_empty_queue) {
+  MPSCUnboundedBlockingQueue<int> queue;
   std::atomic<bool> element_taken = false;
 
   auto consumer = std::thread([&]() mutable {
@@ -43,8 +43,8 @@ TEST(SPSCQueueTests, take_blocks_caller_on_empty_queue) {
   consumer.join();
 }
 
-TEST(SPSCQueueTests, close) {
-  SPSCUnboundedBlockingQueue<int> queue;
+TEST(MPSCQueueTests, close) {
+  MPSCUnboundedBlockingQueue<int> queue;
 
   EXPECT_TRUE(queue.Put(1));
   queue.Close();
@@ -56,8 +56,8 @@ TEST(SPSCQueueTests, close) {
   EXPECT_FALSE(element_2.has_value());
 }
 
-TEST(SPSCQueueTests, cancel) {
-  SPSCUnboundedBlockingQueue<int> queue;
+TEST(MPSCQueueTests, cancel) {
+  MPSCUnboundedBlockingQueue<int> queue;
 
   EXPECT_TRUE(queue.Put(1));
   queue.Cancel();
@@ -66,8 +66,8 @@ TEST(SPSCQueueTests, cancel) {
   EXPECT_FALSE(element.has_value());
 }
 
-TEST(SPSCQueueTests, fifo) {
-  SPSCUnboundedBlockingQueue<int> queue;
+TEST(MPSCQueueTests, fifo) {
+  MPSCUnboundedBlockingQueue<int> queue;
 
   EXPECT_TRUE(queue.Put(1));
   EXPECT_TRUE(queue.Put(2));
@@ -86,8 +86,8 @@ TEST(SPSCQueueTests, fifo) {
   EXPECT_EQ(element_3.value(), 3);
 }
 
-TEST(SPSCQueueTests, concurrent_fifo) {
-  SPSCUnboundedBlockingQueue<int> queue;
+TEST(MPSCQueueTests, concurrent_fifo) {
+  MPSCUnboundedBlockingQueue<int> queue;
   std::vector<int> elements{1, 2, 3, 4, 5};
 
   auto producer = std::thread([&]() mutable {
@@ -109,6 +109,44 @@ TEST(SPSCQueueTests, concurrent_fifo) {
   EXPECT_EQ(elements, consumed);
 
   producer.join();
+}
+
+TEST(MPSCQueueTests, close_wakes_up_consumer) {
+  MPSCUnboundedBlockingQueue<int> queue;
+
+  std::atomic<bool> is_woke_up = false;
+
+  auto consumer = std::thread([&]() mutable {
+    queue.Take();
+    is_woke_up.store(true);
+  });
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_FALSE(is_woke_up.load());
+  queue.Close();
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_TRUE(is_woke_up.load());
+
+  consumer.join();
+}
+
+TEST(MPSCQueueTests, cancel_wakes_up_consumer) {
+  MPSCUnboundedBlockingQueue<int> queue;
+
+  std::atomic<bool> is_woke_up = false;
+
+  auto consumer = std::thread([&]() mutable {
+    queue.Take();
+    is_woke_up.store(true);
+  });
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_FALSE(is_woke_up.load());
+  queue.Cancel();
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_TRUE(is_woke_up.load());
+
+  consumer.join();
 }
 
 }  // namespace proud_color_sorter::tests

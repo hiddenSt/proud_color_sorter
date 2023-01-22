@@ -22,6 +22,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 
 #--------------------------------------------------------------------
 # Dependencies
@@ -32,22 +33,27 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
 endif()
 
 find_package(Threads REQUIRED)
-find_package(fmt REQUIRED)
-find_package(CLI11 REQUIRED)
+find_package(fmt 9.0.0 REQUIRED)
+find_package(CLI11 2.0.0 REQUIRED)
 
 #--------------------------------------------------------------------
 # Sources
 #--------------------------------------------------------------------
 
 set(sources
+    src/utils/app.hpp
+    src/utils/app.cpp
+    src/utils/channel.hpp
+    src/utils/channel.cpp
     src/utils/color_formatter.hpp
     src/utils/daemon_main.hpp
     src/utils/daemon_main.cpp
+    src/utils/random_generator.hpp
     src/counting_sort.cpp
     src/counting_sort.hpp
     src/color.hpp
     src/order.hpp
-    src/spsc_queue.hpp
+    src/mpsc_queue.hpp
 )
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${sources})
 
@@ -87,6 +93,8 @@ target_include_directories(${PROJECT_NAME}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "pcs")
 
 if (ENABLE_DEVELOPER_MODE)
   set(Proud_Color_Sorter_WARNINGS_AS_ERRORS ON)
