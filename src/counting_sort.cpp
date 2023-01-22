@@ -14,7 +14,7 @@ std::array<std::size_t, kColorSize> CountColors(const std::vector<Color>& colors
     color_count[i] = 0;
   }
 
-  for (const auto& color : colors) {
+  for (const Color color : colors) {
     ++color_count[order.GetRank(color)];
   }
 
