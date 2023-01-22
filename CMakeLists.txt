@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.15)
 
 project(proud_color_sorter
         VERSION 1.0.0
-        DESCRIPTION "Who am I?"
-        LANGUAGES CXX)
+        DESCRIPTION "Simple app, which can sort colors."
+        LANGUAGES CXX
+)
 
 #--------------------------------------------------------------------
 # Settings an options
@@ -76,7 +77,8 @@ target_link_libraries(${PROJECT_NAME}_objs
   PUBLIC
     Threads::Threads
     CLI11::CLI11
-    fmt::fmt)
+    fmt::fmt
+)
 
 target_sources(${PROJECT_NAME}_objs 
   PRIVATE
