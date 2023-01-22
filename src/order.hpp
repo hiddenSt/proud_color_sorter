@@ -2,8 +2,8 @@
 
 #include <array>
 #include <cstddef>
-#include <iterator>
 #include <initializer_list>
+#include <iterator>
 #include <unordered_map>
 
 namespace proud_color_sorter {
@@ -18,11 +18,8 @@ class Order {
 
   /// Immutable iterator.
   class ConstIterator;
-  
-  Order() = default;
 
-  /// 
-  Order(std::initializer_list<T> init);
+  Order() = default;
 
   Order(const Order& other) = default;
 
@@ -271,15 +268,6 @@ class Order<T, MaxRank>::ConstIterator {
  private:
   const T* rank_to_element_ptr_ = nullptr;
 };
-
-template <typename T, std::size_t MaxRank>
-Order<T, MaxRank>::Order(std::initializer_list<T> init) {
-  static_assert(init.size() == MaxRank, "Initializer list size must be equal to 'MaxRank' template argument.");
-
-  for (std::size_t i = 0; i < init.size(); ++i) {
-    Set(std::move_if_noexcept(init[i]), i);
-  }
-}
 
 template <typename T, std::size_t MaxRank>
 void Order<T, MaxRank>::Set(T element, const std::size_t rank) noexcept {
