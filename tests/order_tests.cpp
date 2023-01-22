@@ -7,10 +7,10 @@
 namespace proud_color_sorter::tests {
 
 TEST(OrderTests, order) {
-  Order<Color, kColorCount> colors_order;
+  Order<Color, kMaxColorValue> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 2);
+  colors_order.Set(Color::kRed, 3);
 
   EXPECT_EQ(colors_order.GetElement(0), Color::kBlue);
   EXPECT_EQ(colors_order.GetElement(1), Color::kGreen);
@@ -22,10 +22,10 @@ TEST(OrderTests, order) {
 }
 
 TEST(OrderTests, random_iterator_requirements) {
-  Order<Color, kColorCount> colors_order;
+  Order<Color, kMaxColorValue> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 2);
+  colors_order.Set(Color::kRed, 3);
 
   auto first = colors_order.begin();
   EXPECT_EQ(*first, Color::kBlue);
@@ -72,10 +72,10 @@ TEST(OrderTests, random_iterator_requirements) {
 }
 
 TEST(OrderTests, const_random_iterator_requirements) {
-  Order<Color, kColorCount> colors_order;
+  Order<Color, kMaxColorValue> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 2);
+  colors_order.Set(Color::kRed, 3);
 
   auto first = colors_order.cbegin();
   EXPECT_EQ(*first, Color::kBlue);
@@ -122,10 +122,10 @@ TEST(OrderTests, const_random_iterator_requirements) {
 }
 
 TEST(OrderTests, comparison_methods) {
-  Order<Color, kColorCount> colors_order;
+  Order<Color, kMaxColorValue> colors_order;
   colors_order.Set(Color::kBlue, 0);
   colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 2);
+  colors_order.Set(Color::kRed, 3);
 
   EXPECT_TRUE(colors_order.IsEqual(Color::kBlue, Color::kBlue));
   EXPECT_FALSE(colors_order.IsEqual(Color::kBlue, Color::kRed));
@@ -145,7 +145,7 @@ TEST(OrderTests, comparison_methods) {
   EXPECT_FALSE(colors_order.IsGreaterOrEqual(Color::kBlue, Color::kRed));
 }
 
-TEST(OrderTest, iterators_preserve_elements_order) {
+TEST(OrderTest, iterator_preserves_elements_order) {
   Order<int, 5> order;
   std::vector<int> ordered_seq{3, 4, 6, 7, 9};
 
@@ -153,13 +153,32 @@ TEST(OrderTest, iterators_preserve_elements_order) {
     order.Set(ordered_seq[i], i);
   }
 
-  std::vector<int> collected_from_iterators;
+  std::vector<int> collected_from_iterator;
 
   for (int element : order) {
-    collected_from_iterators.push_back(element);
+    collected_from_iterator.push_back(element);
   }
 
-  EXPECT_EQ(ordered_seq, collected_from_iterators);
+  EXPECT_EQ(ordered_seq, collected_from_iterator);
+}
+
+TEST(OrderTest, const_iterator_preserves_elements_order) {
+  Order<int, 5> order;
+  std::vector<int> ordered_seq{3, 4, 6, 7, 9};
+
+  for (std::size_t i = 0; i < ordered_seq.size(); ++i) {
+    order.Set(ordered_seq[i], i);
+  }
+
+  std::vector<int> collected_from_iterator;
+
+  const Order<int, 5>& const_order = order;
+
+  for (int element : const_order) {
+    collected_from_iterator.push_back(element);
+  }
+
+  EXPECT_EQ(ordered_seq, collected_from_iterator);
 }
 
 }  // namespace proud_color_sorter::tests
