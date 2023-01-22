@@ -8,15 +8,15 @@
 
 namespace proud_color_sorter {
 
-/// Stores order of elements of type \a T.
-/// Provides STL-like iterators API to iterate through order relation.
+/// Stores order of elements of a type \a T.
+/// Provides STL-like iterators API to iterate through the order relation.
 template <typename T, std::size_t MaxRank>
 class Order {
  public:
-  /// Mutable iterator.
+  /// A mutable iterator.
   class Iterator;
 
-  /// Immutable iterator.
+  /// An immutable iterator.
   class ConstIterator;
 
   Order() = default;
@@ -34,13 +34,13 @@ class Order {
   /// Sets map between \a element and \a rank.
   void Set(T element, const std::size_t rank) noexcept;
 
-  /// Returns rank of \a element
+  /// Returns rank of an \a element
   [[nodiscard]] std::size_t GetRank(const T& element) const noexcept;
 
-  /// Returns element by \a rank
+  /// Returns an element, which rank is equal to \a rank
   T& GetElement(const std::size_t rank) noexcept;
 
-  /// Returns const reference to element by \a rank
+  /// Returns a const reference to the element by \a rank
   const T& GetElement(const std::size_t rank) const noexcept;
 
   /// Returns \c true if \a lhs rank is equal to \a rhs rank, returns \c false otherwise.

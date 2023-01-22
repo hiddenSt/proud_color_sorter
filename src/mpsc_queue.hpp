@@ -11,17 +11,17 @@ namespace proud_color_sorter {
 template <typename T>
 class MPSCUnboundedBlockingQueue {
  public:
-  /// Put \a element in queue if it's not closed and returns true, if queue is closed returns false.
+  /// Put \a element in the queue if it's not closed and returns \c true, if the queue is closed returns \c false.
   bool Put(T element);
 
-  /// Returns element from queue head if it's not closed.
-  /// Blocks caller if queue is empty until it's filled.
+  /// Returns element from the queue head if it's not closed.
+  /// Blocks caller if the queue is empty until it's filled.
   std::optional<T> Take();
 
-  /// Close queue for new \ref Put.
+  /// Closes the queue for new \ref Put calls.
   void Close();
 
-  /// Close queue. Drains pending elements from queue.
+  /// Closes the queue. Drains pending elements from the queue.
   void Cancel();
 
  private:

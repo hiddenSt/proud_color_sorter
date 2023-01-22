@@ -1,6 +1,7 @@
 #include <counting_sort.hpp>
 
-#include <cstdlib>
+#include <array>
+#include <cstdint>
 
 namespace proud_color_sorter {
 

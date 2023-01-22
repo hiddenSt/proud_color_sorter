@@ -10,7 +10,7 @@ namespace proud_color_sorter::utils {
 
 using Channel = MPSCUnboundedBlockingQueue<std::vector<Color>>;
 
-/// Workaround to be able to cancel channel on signal from user.
+/// A workaround to be able to cancel a channel on a signal from the user.
 class ChannelSingleton {
  public:
   static ChannelSingleton& Get();
