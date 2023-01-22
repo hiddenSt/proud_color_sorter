@@ -23,6 +23,13 @@ which provides a convenient way to install dependencies. If you want to build th
 
 ## Build
 
+The following cmake options affect cmake behavior:
+
+* `Proud_Color_Sorter_WARNINGS_AS_ERRORS` - if set to `ON` treats all compiler warnings as errors. (`Default: OFF`)
+* `ENABLE_DEVELOPER_MODE` - if set to `ON` enables all code analyses, like clang-tidy targets, sanitizers and warnings as errros.
+it also includes tests to build.
+* `BUILD_TESTING` - enables tests targets
+
 To build the project, follow these steps:
 
 1. Create a build directory
