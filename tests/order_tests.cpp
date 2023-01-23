@@ -6,11 +6,18 @@
 
 namespace proud_color_sorter::tests {
 
+decltype(auto) MakeOrder(const std::array<Color, kColorSize>& colors) {
+  Order<Color, kColorSize> color_order;
+
+  for (std::size_t i = 0; i < colors.size(); ++i) {
+    color_order.Set(colors[i], i);
+  }
+
+  return color_order;
+}
+
 TEST(OrderTests, order) {
-  Order<Color, kColorSize> colors_order;
-  colors_order.Set(Color::kBlue, 0);
-  colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 2);
+  auto colors_order = MakeOrder({Color::kBlue, Color::kGreen, Color::kRed});
 
   EXPECT_EQ(colors_order.GetElement(0), Color::kBlue);
   EXPECT_EQ(colors_order.GetElement(1), Color::kGreen);
@@ -22,10 +29,7 @@ TEST(OrderTests, order) {
 }
 
 TEST(OrderTests, random_iterator_requirements) {
-  Order<Color, kColorSize> colors_order;
-  colors_order.Set(Color::kBlue, 0);
-  colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 2);
+  auto colors_order = MakeOrder({Color::kBlue, Color::kGreen, Color::kRed});
 
   auto first = colors_order.begin();
   EXPECT_EQ(*first, Color::kBlue);
@@ -72,10 +76,7 @@ TEST(OrderTests, random_iterator_requirements) {
 }
 
 TEST(OrderTests, const_random_iterator_requirements) {
-  Order<Color, kColorSize> colors_order;
-  colors_order.Set(Color::kBlue, 0);
-  colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 2);
+  auto colors_order = MakeOrder({Color::kBlue, Color::kGreen, Color::kRed});
 
   auto first = colors_order.cbegin();
   EXPECT_EQ(*first, Color::kBlue);
@@ -122,10 +123,7 @@ TEST(OrderTests, const_random_iterator_requirements) {
 }
 
 TEST(OrderTests, comparison_methods) {
-  Order<Color, kColorSize> colors_order;
-  colors_order.Set(Color::kBlue, 0);
-  colors_order.Set(Color::kGreen, 1);
-  colors_order.Set(Color::kRed, 2);
+  auto colors_order = MakeOrder({Color::kBlue, Color::kGreen, Color::kRed});
 
   EXPECT_TRUE(colors_order.IsEqual(Color::kBlue, Color::kBlue));
   EXPECT_FALSE(colors_order.IsEqual(Color::kBlue, Color::kRed));
