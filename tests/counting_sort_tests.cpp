@@ -6,15 +6,13 @@
 #include <counting_sort.hpp>
 #include <order.hpp>
 
+#include <utils.hpp>
+
 namespace proud_color_sorter::tests {
 
 TEST(CountingSortTest, empty_array) {
   std::vector<Color> colors;
-  ColorOrder order;
-
-  order.Set(Color::kRed, 0);
-  order.Set(Color::kGreen, 1);
-  order.Set(Color::kBlue, 2);
+  auto order = utils::MakeOrder<Color, 3>({Color::kRed, Color::kGreen, Color::kBlue});
 
   auto sorted_colors = CountingSort(colors, order);
 
@@ -23,10 +21,7 @@ TEST(CountingSortTest, empty_array) {
 
 TEST(CountingSortTest, order) {
   std::vector<Color> colors{Color::kRed, Color::kGreen, Color::kBlue, Color::kGreen};
-  ColorOrder order;
-  order.Set(Color::kRed, 0);
-  order.Set(Color::kGreen, 1);
-  order.Set(Color::kBlue, 2);
+  auto order = utils::MakeOrder<Color, 3>({Color::kRed, Color::kGreen, Color::kBlue});
 
   auto sorted_colors = CountingSort(colors, order);
   std::sort(colors.begin(), colors.end(),
@@ -37,10 +32,7 @@ TEST(CountingSortTest, order) {
 
 TEST(CountingSortTest, descending_input) {
   std::vector<Color> colors{Color::kRed, Color::kRed, Color::kRed, Color::kBlue, Color::kBlue, Color::kGreen};
-  ColorOrder order;
-  order.Set(Color::kRed, 2);
-  order.Set(Color::kBlue, 1);
-  order.Set(Color::kGreen, 0);
+  auto order = utils::MakeOrder<Color, 3>({Color::kGreen, Color::kBlue, Color::kRed});
 
   auto sorted_colors = CountingSort(colors, order);
 
@@ -52,10 +44,7 @@ TEST(CountingSortTest, descending_input) {
 
 TEST(CountingSortTest, ascending_input) {
   std::vector<Color> colors{Color::kRed, Color::kRed, Color::kRed, Color::kBlue, Color::kBlue, Color::kGreen};
-  ColorOrder order;
-  order.Set(Color::kRed, 0);
-  order.Set(Color::kBlue, 1);
-  order.Set(Color::kGreen, 2);
+  auto order = utils::MakeOrder<Color, 3>({Color::kRed, Color::kGreen, Color::kBlue});
 
   auto sorted_colors = CountingSort(colors, order);
 
