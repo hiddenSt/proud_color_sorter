@@ -21,6 +21,7 @@ target_sources(${PROJECT_NAME}_tests
     daemon_main_tests.cpp
     order_tests.cpp
     mpsc_queue_tests.cpp
+    utils.hpp
 )
 
 enable_sanitizers(${PROJECT_NAME}_tests)
