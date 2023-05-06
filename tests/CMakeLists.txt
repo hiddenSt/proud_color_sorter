@@ -5,7 +5,7 @@ target_link_libraries(${PROJECT_NAME}_tests
   PRIVATE
     ${PROJECT_NAME}_objs
     GTest::gtest_main
-    fmt::fmt
+    # fmt::fmt
 )
 
 target_include_directories(${PROJECT_NAME}_tests
