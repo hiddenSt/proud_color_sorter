@@ -30,12 +30,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 #--------------------------------------------------------------------
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
-  include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+ # include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 endif()
 
 find_package(Threads REQUIRED)
-find_package(fmt 9.0.0 REQUIRED)
-find_package(CLI11 2.0.0 REQUIRED)
+#find_package(fmt 9.0.0 REQUIRED)
+#find_package(CLI11 2.0.0 REQUIRED)
 
 #--------------------------------------------------------------------
 # Sources
@@ -74,8 +74,8 @@ target_include_directories(${PROJECT_NAME}_objs
 target_link_libraries(${PROJECT_NAME}_objs 
   PUBLIC
     Threads::Threads
-    CLI11::CLI11
-    fmt::fmt
+    # CLI11::CLI11
+    # fmt::fmt
 )
 
 target_sources(${PROJECT_NAME}_objs 
