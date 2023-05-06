@@ -42,9 +42,9 @@ find_package(Threads REQUIRED)
 #--------------------------------------------------------------------
 
 set(sources
-    src/utils/app.hpp
-    src/utils/app.cpp
-    src/utils/color_formatter.hpp
+    # src/utils/app.hpp
+    # src/utils/app.cpp
+    # src/utils/color_formatter.hpp
     # src/utils/daemon_main.hpp
     # src/utils/daemon_main.cpp
     src/utils/random_generator.hpp
