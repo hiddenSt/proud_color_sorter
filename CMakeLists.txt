@@ -115,10 +115,10 @@ set_project_warnings(
 # Install set
 #--------------------------------------------------------------------
 
-install(TARGETS ${PROJECT_NAME}
-        DESTINATION ${CMAKE_INSTALL_BINDIR}
-        COMPONENT ${PROJECT_NAME}
-)
+#install(TARGETS ${PROJECT_NAME}
+#        DESTINATION ${CMAKE_INSTALL_BINDIR}
+#        COMPONENT ${PROJECT_NAME}
+#)
 
 #--------------------------------------------------------------------
 # Tests
